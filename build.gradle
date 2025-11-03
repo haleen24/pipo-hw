@@ -15,6 +15,10 @@ java {
     }
 }
 
+bootJar {
+    enabled = true
+}
+
 repositories {
     mavenCentral()
 }
@@ -66,6 +70,10 @@ sourceSets {
 
 tasks.named('compileJava') {
     dependsOn('openApiGenerate')
+}
+
+tasks.named('jar') {
+    enabled = false
 }
 
 tasks.named('test') {
