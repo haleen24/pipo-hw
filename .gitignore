@@ -38,3 +38,7 @@ out/
 
 ### env ###
 .env
+
+### cert ###
+private.pem
+public.pem

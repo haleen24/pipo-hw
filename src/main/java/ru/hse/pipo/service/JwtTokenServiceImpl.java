@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -26,11 +28,11 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     private final Key publicKey;
 
     public JwtTokenServiceImpl(@Value("${jwt.expiration-time}") Duration expirationTime,
-                               @Value("${jwt.key.public}") String publicKey,
-                               @Value("${jwt.key.private}") String privateKey) {
+                               @Value("${jwt.key.public}") String publicKeyPath,
+                               @Value("${jwt.key.private}") String privateKeyPath) {
         this.expirationTime = expirationTime;
-        this.publicKey = loadPublicKey(publicKey);
-        this.privateKey = loadPrivateKey(privateKey);
+        this.publicKey = loadPublicKey(publicKeyPath);
+        this.privateKey = loadPrivateKey(privateKeyPath);
     }
 
     @Override
@@ -66,7 +68,8 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     }
 
     @SneakyThrows
-    private PrivateKey loadPrivateKey(String key) {
+    private PrivateKey loadPrivateKey(String path) {
+        String key = Files.readString(Paths.get(path));
         byte[] encoded = Base64.getDecoder().decode(clearKey(key));
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
         KeyFactory kf = KeyFactory.getInstance("RSA");
@@ -74,7 +77,8 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     }
 
     @SneakyThrows
-    private PublicKey loadPublicKey(String key) {
+    private PublicKey loadPublicKey(String path) {
+        String key = Files.readString(Paths.get(path));
         byte[] encoded = Base64.getDecoder().decode(clearKey(key));
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(encoded);
         KeyFactory kf = KeyFactory.getInstance("RSA");

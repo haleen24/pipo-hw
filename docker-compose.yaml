@@ -14,5 +14,19 @@ services:
     volumes:
       - pipo_postgres_data:/var/lib/postgresql/data
 
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pipo
+    ports:
+      - "8080:8080"
+    env_file:
+      - .docker-compose.env
+    depends_on:
+      - postgres
+    volumes:
+      - ./private.pem:/app/private.pem
+      - ./public.pem:/app/public.pem
 volumes:
   pipo_postgres_data:

@@ -23,8 +23,6 @@ import ru.hse.pipo.filter.JwtAuthenticationFilter;
 
 import javax.sql.DataSource;
 
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-
 @EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
@@ -56,8 +54,7 @@ public class SecurityConfiguration {
 
     @Bean
     public UserDetailsManager userDetailsManager(DataSource dataSource) {
-        JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
-        return jdbcUserDetailsManager;
+        return new JdbcUserDetailsManager(dataSource);
     }
 
     @Bean
