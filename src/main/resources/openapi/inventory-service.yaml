@@ -1,0 +1,122 @@
+openapi: 3.0.3
+info:
+  title: Inventory API
+  version: 0.1
+
+tags:
+  - name: Auth
+    description: Endpoints for registration and login
+  - name: Inventory
+    description: Endpoints for managing warehouse products
+
+paths:
+  /public/auth/register:
+    post:
+      tags: [ Auth ]
+      summary: Register new user
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+
+  /public/auth/login:
+    post:
+      tags: [ Auth ]
+      summary: Login
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+
+  /api/products:
+    get:
+      tags: [ Inventory ]
+      summary: Get all products
+      operationId: getProducts
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductResponse'
+    post:
+      tags: [ Inventory ]
+      summary: Create product
+      operationId: createProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+
+components:
+  schemas:
+    RegisterRequest:
+      type: object
+      required: [ username, password ]
+      properties:
+        username: { type: string }
+        password: { type: string }
+
+    LoginRequest:
+      type: object
+      required: [ username, password ]
+      properties:
+        username: { type: string }
+        password: { type: string }
+
+    AuthResponse:
+      type: object
+      properties:
+        token: { type: string }
+
+    ProductRequest:
+      type: object
+      required: [ name, quantity, price ]
+      properties:
+        name: { type: string }
+        description: { type: string }
+        category: { type: string }
+        quantity: { type: long }
+
+    ProductResponse:
+      type: object
+      properties:
+        id: { type: long }
+        name: { type: string }
+        description: { type: string }
+        category: { type: string }
+        quantity: { type: long }
+        updatedAt: { type: string, format: date-time }
+        createdAt: { type: string, format: date-time }

@@ -1,0 +1,18 @@
+# пока на docker-compose
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: pipo-postgres
+    environment:
+      POSTGRES_USER: pipo
+      POSTGRES_PASSWORD: pipo
+      POSTGRES_DB: pipo
+    ports:
+      - "5432:5432"
+    volumes:
+      - pipo_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  pipo_postgres_data:

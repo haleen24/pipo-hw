@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: inventory
+  datasource:
+    url: ${PG_URL}
+    username: ${PG_USER}
+    password: ${PG_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-master.yaml
+
+jwt:
+  expiration-time: 10m
+  key:
+    public: ${JWT_PUBLIC_KEY}
+    private: ${JWT_PRIVATE_KEY}
