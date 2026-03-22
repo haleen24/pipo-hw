@@ -9,14 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ShipmentUnit {
-    private Long id;
-    private Shipment shipment;
-    private Long amount;
-    private Long lengthCm;
-    private Long widthCm;
-    private Long heightCm;
-    private Location location;
+public class Zone {
+    private String code;
+    private ZoneType type;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
 }

@@ -9,14 +9,13 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ShipmentUnit {
+public class LocationType {
     private Long id;
-    private Shipment shipment;
-    private Long amount;
+    private String code;
     private Long lengthCm;
     private Long widthCm;
     private Long heightCm;
-    private Location location;
+    private Boolean unlimited;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
 }

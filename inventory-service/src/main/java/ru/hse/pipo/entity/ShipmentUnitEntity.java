@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -21,6 +22,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 @Entity
 @Table(name = "shipment_unit")
+@Builder
 public class ShipmentUnitEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,12 +31,12 @@ public class ShipmentUnitEntity {
     @JoinColumn(name = "shipment_id")
     private ShipmentEntity shipment;
     private Long amount;
-    private Integer lengthCm;
-    private Integer widthCm;
-    private Integer heightCm;
+    private Long lengthCm;
+    private Long widthCm;
+    private Long heightCm;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
-    private LocationEntity locationEntity;
+    private LocationEntity location;
     @CreationTimestamp
     private OffsetDateTime createdAt;
     @UpdateTimestamp

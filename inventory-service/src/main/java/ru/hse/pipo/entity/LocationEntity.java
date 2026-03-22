@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -21,6 +22,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 @Entity
 @Table(name = "location")
+@Builder
 public class LocationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +33,7 @@ public class LocationEntity {
     private ZoneEntity zone;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_type_id")
-    private LocationTypeEntity locationTypeEntity;
+    private LocationTypeEntity locationType;
     @CreationTimestamp
     private OffsetDateTime createdAt;
     @UpdateTimestamp

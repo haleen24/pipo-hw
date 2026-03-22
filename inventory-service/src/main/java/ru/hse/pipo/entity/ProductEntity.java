@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -18,15 +19,16 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 @Entity
 @Table(name = "product")
+@Builder
 public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String code;
     private String name;
-    private Integer lengthCm;
-    private Integer widthCm;
-    private Integer heightCm;
+    private Long lengthCm;
+    private Long widthCm;
+    private Long heightCm;
     @CreationTimestamp
     private OffsetDateTime createdAt;
     @UpdateTimestamp

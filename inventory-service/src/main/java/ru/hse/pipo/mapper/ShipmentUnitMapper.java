@@ -23,5 +23,6 @@ public interface ShipmentUnitMapper {
 
     @Mapping(source = "shipment.id", target = "shipmentId")
     @Mapping(source = "shipment.status", target = "shipmentStatus")
+    @Mapping(source = "location.code", target = "locationCode")
     ShipmentUnitResponse toShipmentUnitResponse(ShipmentUnit shipment);
 }

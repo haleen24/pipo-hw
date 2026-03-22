@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS shipment_unit(
     length_cm       INTEGER                     NOT NULL,
     width_cm        INTEGER                     NOT NULL,
     height_cm       INTEGER                     NOT NULL,
-    location_id     BIGINT,                     NOT NULL REFERENCES location(id),
+    location_id     BIGINT                      NOT NULL REFERENCES location(id),
     created_at      TIMESTAMP WITH TIME ZONE    NOT NULL,
     updated_at      TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT now()
 );

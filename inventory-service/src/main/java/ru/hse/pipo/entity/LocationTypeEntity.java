@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -18,6 +19,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 @Entity
 @Table(name = "location_type")
+@Builder
 public class LocationTypeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +28,7 @@ public class LocationTypeEntity {
     private Integer lengthCm;
     private Integer widthCm;
     private Integer heightCm;
+    private Boolean unlimited;
     @CreationTimestamp
     private OffsetDateTime createdAt;
     @UpdateTimestamp
