@@ -47,7 +47,7 @@ dependencies {
 
 openApiGenerate {
     generatorName = "spring"
-    inputSpec = "$rootDir/src/main/resources/openapi/inventory-service.yaml"
+    inputSpec = "$rootDir/inventory-service/src/main/resources/openapi/inventory-service.yaml"
     outputDir = "$buildDir/generated"
     apiPackage = "ru.hse.inventory.controller"
     modelPackage = "ru.hse.inventory.model"
