@@ -2,11 +2,7 @@ package ru.hse.pipo.entity;
 
 import java.time.OffsetDateTime;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,13 +13,15 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "product")
-public class ProductEntity {
+@Table(name = "shipment_unit")
+public class ShipmentUnitEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String code;
-    private String name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shipment_id")
+    private ShipmentEntity shipment;
+    private Long amount;
     private Integer lengthCm;
     private Integer widthCm;
     private Integer heightCm;

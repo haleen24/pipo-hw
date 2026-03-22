@@ -17,13 +17,12 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "product")
-public class ProductEntity {
+@Table(name = "location_type")
+public class LocationTypeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String code;
-    private String name;
     private Integer lengthCm;
     private Integer widthCm;
     private Integer heightCm;

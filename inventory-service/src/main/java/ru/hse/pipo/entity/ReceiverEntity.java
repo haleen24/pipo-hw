@@ -17,16 +17,13 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "product")
-public class ProductEntity {
+@Table(name = "receiver")
+public class ReceiverEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String code;
     private String name;
-    private Integer lengthCm;
-    private Integer widthCm;
-    private Integer heightCm;
+    private String code;
     @CreationTimestamp
     private OffsetDateTime createdAt;
     @UpdateTimestamp

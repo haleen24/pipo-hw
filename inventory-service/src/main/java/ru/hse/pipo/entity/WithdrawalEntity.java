@@ -17,16 +17,15 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "product")
-public class ProductEntity {
+@Table(name = "withdrawal")
+public class WithdrawalEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String code;
-    private String name;
-    private Integer lengthCm;
-    private Integer widthCm;
-    private Integer heightCm;
+    private String productLocationCode;
+    private String productCode;
+    private Long amount;
+    private String status;
     @CreationTimestamp
     private OffsetDateTime createdAt;
     @UpdateTimestamp
