@@ -5,29 +5,27 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.web.client.RestClient;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-@Testcontainers
-public class CommonTestConfiguration {
-    @Container
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15")
+public abstract class CommonTestConfiguration {
+    static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15")
         .withDatabaseName("wms_test")
         .withUsername("test")
         .withPassword("test");
 
+    static {
+        postgres.start();
+    }
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", postgres::getJdbcUrl);
         registry.add("spring.datasource.username", postgres::getUsername);
         registry.add("spring.datasource.password", postgres::getPassword);
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
+        registry.add("spring.liquibase.drop-first", () -> "true");
     }
 
     @LocalServerPort

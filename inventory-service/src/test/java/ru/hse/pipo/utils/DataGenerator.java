@@ -69,6 +69,7 @@ public class DataGenerator {
             .externalShipmentId(generateString())
             .product(productEntity)
             .status(ShipmentStatus.IN_PROCESS.name())
+            .shipmentUnitCount(generateLong())
             .build();
         return shipmentRepository.save(shipmentEntity);
     }

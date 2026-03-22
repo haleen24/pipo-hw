@@ -15,6 +15,7 @@ public class Shipment {
     private String externalShipmentId;
     private Product product;
     private ShipmentStatus status;
+    private Long shipmentUnitCount;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
 }

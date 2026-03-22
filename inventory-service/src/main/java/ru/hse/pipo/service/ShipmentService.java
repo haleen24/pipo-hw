@@ -11,4 +11,6 @@ public interface ShipmentService {
     ShipmentUnit createShipmentUnit(ShipmentUnit shipmentUnit);
 
     ShipmentUnit getShipmentUnitById(Long id);
+
+    ShipmentUnit moveShipmentUnit(Long shipmentUnitId, String locationCode);
 }

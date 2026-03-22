@@ -23,9 +23,9 @@ CREATE TABLE IF NOT EXISTS product(
     id              BIGSERIAL                   PRIMARY KEY,
     code            VARCHAR                     NOT NULL UNIQUE,
     name            VARCHAR                     NOT NULL,
-    length_cm       INTEGER                     NOT NULL,
-    width_cm        INTEGER                     NOT NULL,
-    height_cm       INTEGER                     NOT NULL,
+    length_cm       BIGINT                      NOT NULL,
+    width_cm        BIGINT                      NOT NULL,
+    height_cm       BIGINT                      NOT NULL,
     created_at      TIMESTAMP WITH TIME ZONE    NOT NULL,
     updated_at      TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT now()
 );
@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS shipment(
     external_shipment_id    VARCHAR,
     product_id              BIGINT                      NOT NULL REFERENCES product(id),
     status                  VARCHAR                     NOT NULL,
+    shipment_unit_count     BIGINT                      NOT NULL,
     created_at              TIMESTAMP WITH TIME ZONE    NOT NULL,
     updated_at              TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT now()
 );
@@ -92,10 +93,10 @@ CREATE TABLE IF NOT EXISTS shipment_unit(
     id              BIGSERIAL                   PRIMARY KEY,
     shipment_id     BIGINT                      NOT NULL REFERENCES shipment(id),
     amount          BIGINT                      NOT NULL,
-    length_cm       INTEGER                     NOT NULL,
-    width_cm        INTEGER                     NOT NULL,
-    height_cm       INTEGER                     NOT NULL,
-    location_id     BIGINT                      NOT NULL REFERENCES location(id),
+    length_cm       BIGINT                      NOT NULL,
+    width_cm        BIGINT                      NOT NULL,
+    height_cm       BIGINT                      NOT NULL,
+    location_id     BIGINT                      REFERENCES location(id),
     created_at      TIMESTAMP WITH TIME ZONE    NOT NULL,
     updated_at      TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT now()
 );

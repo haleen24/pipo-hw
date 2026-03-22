@@ -10,6 +10,7 @@ import ru.hse.pipo.exception.InventoryException;
 import ru.hse.pipo.mapper.ShipmentMapper;
 import ru.hse.pipo.model.Product;
 import ru.hse.pipo.model.Shipment;
+import ru.hse.pipo.model.ShipmentStatus;
 import ru.hse.pipo.model.ShipmentUnit;
 import ru.hse.pipo.model.Supplier;
 import ru.hse.pipo.repository.ShipmentRepository;
@@ -62,6 +63,21 @@ public class ShipmentServiceImpl implements ShipmentService {
     @Override
     public ShipmentUnit getShipmentUnitById(Long id) {
         return shipmentUnitService.getById(id);
+    }
+
+    @Override
+    @Transactional
+    public ShipmentUnit moveShipmentUnit(Long shipmentUnitId, String locationCode) {
+        ShipmentUnit shipmentUnit = shipmentUnitService.moveById(shipmentUnitId, locationCode);
+        Shipment shipment = shipmentUnit.getShipment();
+        Boolean shipmentComplete = shipmentUnitService.isShipmentComplete(shipment);
+        if (!shipmentComplete) {
+            return shipmentUnit;
+        }
+        shipment.setStatus(ShipmentStatus.COMPLETE);
+        ShipmentEntity shipmentEntity = shipmentMapper.toShipmentEntity(shipment);
+        shipmentRepository.save(shipmentEntity);
+        return getShipmentUnitById(shipmentUnitId);
     }
 
     private ShipmentEntity getShipmentEntity(Long id) {

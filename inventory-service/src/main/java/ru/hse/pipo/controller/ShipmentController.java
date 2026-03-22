@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.hse.inventory.controller.ShipmentApi;
 import ru.hse.inventory.model.CreateShipmentRequest;
 import ru.hse.inventory.model.CreateShipmentUnitRequest;
+import ru.hse.inventory.model.MoveShipmentUnitRequest;
 import ru.hse.inventory.model.ShipmentResponse;
 import ru.hse.inventory.model.ShipmentUnitResponse;
 import ru.hse.pipo.mapper.ShipmentMapper;
@@ -48,6 +49,13 @@ public class ShipmentController implements ShipmentApi {
     @Override
     public ResponseEntity<ShipmentUnitResponse> getShipmentUnit(Long id) {
         ShipmentUnit shipmentUnit = shipmentService.getShipmentUnitById(id);
+        ShipmentUnitResponse shipmentUnitResponse = shipmentUnitMapper.toShipmentUnitResponse(shipmentUnit);
+        return ResponseEntity.ok(shipmentUnitResponse);
+    }
+
+    @Override
+    public ResponseEntity<ShipmentUnitResponse> moveShipmentUnit(Long id, MoveShipmentUnitRequest moveShipmentUnitRequest) {
+        ShipmentUnit shipmentUnit = shipmentService.moveShipmentUnit(id, moveShipmentUnitRequest.getLocationCode());
         ShipmentUnitResponse shipmentUnitResponse = shipmentUnitMapper.toShipmentUnitResponse(shipmentUnit);
         return ResponseEntity.ok(shipmentUnitResponse);
     }

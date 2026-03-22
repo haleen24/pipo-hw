@@ -55,6 +55,7 @@ public class ShipmentTest extends CommonTestConfiguration {
             .externalShipmentId(generateString())
             .product(productEntity)
             .status(ShipmentStatus.IN_PROCESS.name())
+            .shipmentUnitCount(generateLong())
             .build();
         shipmentRepository.save(shipmentEntity);
 
@@ -83,6 +84,7 @@ public class ShipmentTest extends CommonTestConfiguration {
         createShipmentRequest.setSupplierCode(supplierEntity.getCode());
         createShipmentRequest.setProductCode(productEntity.getCode());
         createShipmentRequest.externalShipmentId(generateString());
+        createShipmentRequest.setShipmentUnitCount(generateLong());
 
         ResponseEntity<ShipmentResponse> response =
             restClient.post().uri(URL).body(createShipmentRequest).retrieve().toEntity(ShipmentResponse.class);
@@ -91,6 +93,7 @@ public class ShipmentTest extends CommonTestConfiguration {
         ShipmentResponse shipmentResponse = response.getBody();
         assertNotNull(shipmentResponse);
         assertNotNull(shipmentResponse.getId());
+        assertEquals(createShipmentRequest.getShipmentUnitCount(), shipmentResponse.getShipmentUnitCount());
         assertEquals(ShipmentStatus.CREATED.name(), shipmentResponse.getStatus());
     }
 }

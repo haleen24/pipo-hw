@@ -102,12 +102,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ShipmentUnitResponse'
   /api/v1/shipmentUnit/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: integer, format: int64 }
     get:
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema: { type: integer, format: int64 }
       tags: [ Shipment ]
       summary: get shipment unit
       operationId: getShipmentUnit
@@ -118,7 +118,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ShipmentUnitResponse'
-
+    put:
+      tags: [ Shipment ]
+      summary: move shipment unit
+      operationId: moveShipmentUnit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoveShipmentUnitRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShipmentUnitResponse'
 components:
   schemas:
     RegisterRequest:
@@ -142,11 +158,12 @@ components:
 
     CreateShipmentRequest:
       type: object
-      required: [ supplierCode, productCode ]
+      required: [ supplierCode, productCode, shipmentUnitCount ]
       properties:
         supplierCode: { type: string }
         externalShipmentId: { type: string }
         productCode: { type: string }
+        shipmentUnitCount: { type: integer, format: int64 }
     ShipmentResponse:
       type: object
       properties:
@@ -155,6 +172,7 @@ components:
         externalShipmentId: { type: string }
         productCode: { type: string }
         status: { type: string }
+        shipmentUnitCount: { type: integer, format: int64 }
         createdAt: { type: string, format: date-time }
         updatedAt: { type: string, format: date-time }
     CreateShipmentUnitRequest:
@@ -166,6 +184,11 @@ components:
         lengthCm: { type: integer, format: int64 }
         widthCm: { type: integer, format: int64 }
         heightCm: { type: integer, format: int64 }
+    MoveShipmentUnitRequest:
+      type: object
+      required: [ locationCode ]
+      properties:
+        locationCode: { type: string }
     ShipmentUnitResponse:
       type: object
       properties:

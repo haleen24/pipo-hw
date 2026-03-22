@@ -35,6 +35,7 @@ public class ShipmentEntity {
     @JoinColumn(name = "product_id")
     private ProductEntity product;
     private String status;
+    private Long shipmentUnitCount;
     @CreationTimestamp
     private OffsetDateTime createdAt;
     @UpdateTimestamp

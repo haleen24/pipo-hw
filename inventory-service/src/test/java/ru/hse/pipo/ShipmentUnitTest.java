@@ -12,6 +12,8 @@ import ru.hse.pipo.entity.LocationEntity;
 import ru.hse.pipo.entity.ShipmentEntity;
 import ru.hse.pipo.entity.ShipmentUnitEntity;
 import ru.hse.pipo.exception.InventoryExceptionCode;
+import ru.hse.pipo.model.ShipmentStatus;
+import ru.hse.pipo.repository.ShipmentRepository;
 import ru.hse.pipo.repository.ShipmentUnitRepository;
 import ru.hse.pipo.utils.DataGenerator;
 
@@ -31,6 +33,9 @@ public class ShipmentUnitTest extends CommonTestConfiguration {
 
     @Autowired
     ShipmentUnitRepository shipmentUnitRepository;
+
+    @Autowired
+    ShipmentRepository shipmentRepository;
 
     @Test
     void getShipmentUnitNotFoundTest() {
@@ -61,7 +66,7 @@ public class ShipmentUnitTest extends CommonTestConfiguration {
         shipmentUnitRepository.save(shipmentUnitEntity);
 
         ResponseEntity<ShipmentUnitResponse> response = restClient.get()
-            .uri(URL_BY_ID.formatted(shipmentEntity.getId()))
+            .uri(URL_BY_ID.formatted(shipmentUnitEntity.getId()))
             .retrieve()
             .toEntity(ShipmentUnitResponse.class);
 
@@ -94,5 +99,7 @@ public class ShipmentUnitTest extends CommonTestConfiguration {
         assertNotNull(shipmentResponse);
         assertNotNull(shipmentResponse.getId());
         assertNull(shipmentResponse.getLocationCode());
+        shipmentEntity = shipmentRepository.findById(shipmentEntity.getId()).orElseThrow();
+        assertEquals(ShipmentStatus.IN_PROCESS.name(), shipmentEntity.getStatus());
     }
 }
