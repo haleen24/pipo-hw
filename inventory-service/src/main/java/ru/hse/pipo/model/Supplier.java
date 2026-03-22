@@ -9,13 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
+public class Supplier {
     private Long id;
-    private String code;
     private String name;
-    private Integer lengthCm;
-    private Integer widthCm;
-    private Integer heightCm;
+    private String code;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
 }

@@ -23,7 +23,7 @@ public class ZoneEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String code;
-    private String name;
+    private String type;
     @CreationTimestamp
     private OffsetDateTime createdAt;
     @UpdateTimestamp

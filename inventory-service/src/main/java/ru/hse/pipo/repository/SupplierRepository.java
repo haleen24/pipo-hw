@@ -3,10 +3,10 @@ package ru.hse.pipo.repository;
 import jakarta.annotation.Nullable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.hse.pipo.entity.ProductEntity;
+import ru.hse.pipo.entity.SupplierEntity;
 
 @Repository
-public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
+public interface SupplierRepository extends JpaRepository<SupplierEntity, Long> {
     @Nullable
-    ProductEntity findByCode(String code);
+    SupplierEntity findByCode(String code);
 }

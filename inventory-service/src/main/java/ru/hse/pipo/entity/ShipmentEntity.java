@@ -28,10 +28,11 @@ public class ShipmentEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supplier_id")
     private SupplierEntity supplier;
-    private Long externalShipmentId;
+    private String externalShipmentId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private ProductEntity product;
+    private String status;
     @CreationTimestamp
     private OffsetDateTime createdAt;
     @UpdateTimestamp

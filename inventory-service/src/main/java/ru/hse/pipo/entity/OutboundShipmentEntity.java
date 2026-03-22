@@ -26,7 +26,7 @@ public class OutboundShipmentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String code;
-    private Long externalShipmentId;
+    private String externalShipmentId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id")
     private ReceiverEntity receiver;

@@ -33,11 +33,60 @@ CREATE TABLE IF NOT EXISTS product(
 CREATE TABLE IF NOT EXISTS shipment(
     id                      BIGSERIAL                   PRIMARY KEY,
     supplier_id             BIGINT                      NOT NULL REFERENCES supplier(id),
-    external_shipment_id    BIGINT,
+    external_shipment_id    VARCHAR,
     product_id              BIGINT                      NOT NULL REFERENCES product(id),
+    status                  VARCHAR                     NOT NULL,
     created_at              TIMESTAMP WITH TIME ZONE    NOT NULL,
     updated_at              TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT now()
 );
+CREATE INDEX shipment_external_shipment_id ON shipment(external_shipment_id);
+
+
+CREATE TABLE IF NOT EXISTS location_type(
+    id              BIGSERIAL                   PRIMARY KEY,
+    code            VARCHAR                     NOT NULL UNIQUE,
+    length_cm       BIGINT,
+    width_cm        BIGINT,
+    height_cm       BIGINT,
+    unlimited       BOOLEAN                     NOT NULL DEFAULT false,
+    created_at      TIMESTAMP WITH TIME ZONE    NOT NULL,
+    updated_at      TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT now()
+);
+ALTER TABLE location_type
+ADD CONSTRAINT location_type_dimensions_check
+CHECK (
+    (unlimited = true)
+    OR
+    (unlimited = false AND length_cm IS NOT NULL AND width_cm IS NOT NULL AND height_cm IS NOT NULL)
+);
+INSERT INTO location_type(code, unlimited, created_at, updated_at) VALUES
+    ('UNLIMITED', true, now(), now());
+
+CREATE TABLE IF NOT EXISTS zone(
+    id          BIGSERIAL                   PRIMARY KEY,
+    code        VARCHAR                     NOT NULL,
+    type        VARCHAR                     NOT NULL,
+    created_at  TIMESTAMP WITH TIME ZONE    NOT NULL,
+    updated_at  TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT now(),
+    UNIQUE(code, type)
+);
+INSERT INTO zone (code, type, created_at, updated_at) VALUES
+    ('DROPPING', 'INBOUND', now(), now()),
+    ('DROPPING', 'STORAGE', now(), now());
+
+
+CREATE TABLE IF NOT EXISTS location(
+    id                  BIGSERIAL                   PRIMARY KEY,
+    code                VARCHAR                     NOT NULL UNIQUE,
+    location_type_id    BIGINT                      NOT NULL REFERENCES location_type(id),
+    zone_id             BIGINT                      NOT NULL REFERENCES zone(id),
+    created_at          TIMESTAMP WITH TIME ZONE    NOT NULL,
+    updated_at          TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT now()
+);
+INSERT INTO location(code, location_type_id, zone_id, created_at, updated_at) VALUES
+    ('INBOUND_DROPPING', 1, 1, now(), now()),
+    ('STORAGE_DROPPING', 1, 2, now(), now());
+
 
 CREATE TABLE IF NOT EXISTS shipment_unit(
     id              BIGSERIAL                   PRIMARY KEY,
@@ -46,36 +95,7 @@ CREATE TABLE IF NOT EXISTS shipment_unit(
     length_cm       INTEGER                     NOT NULL,
     width_cm        INTEGER                     NOT NULL,
     height_cm       INTEGER                     NOT NULL,
-    created_at      TIMESTAMP WITH TIME ZONE    NOT NULL,
-    updated_at      TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT now()
-);
-
-CREATE TABLE IF NOT EXISTS location_type(
-    id              BIGSERIAL                   PRIMARY KEY,
-    code            VARCHAR                     NOT NULL UNIQUE,
-    length_cm       INTEGER                     NOT NULL,
-    width_cm        INTEGER                     NOT NULL,
-    height_cm       INTEGER                     NOT NULL,
-    created_at      TIMESTAMP WITH TIME ZONE    NOT NULL,
-    updated_at      TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT now()
-);
-
-CREATE TABLE IF NOT EXISTS zone(
-    id              BIGSERIAL                   PRIMARY KEY,
-    code            VARCHAR                     NOT NULL UNIQUE,
-    name            VARCHAR                     NOT NULL,
-    created_at      TIMESTAMP WITH TIME ZONE    NOT NULL,
-    updated_at      TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT now()
-);
-
-INSERT INTO zone (code, name, created_at, updated_at) VALUES
-    ('INBOUND', 'Зона приемки', now(), now()),
-    ('STORAGE', 'Зона хранения', now(), now());
-
-CREATE TABLE IF NOT EXISTS location(
-    id              BIGSERIAL                   PRIMARY KEY,
-    code            VARCHAR                     NOT NULL UNIQUE,
-    zone_id         BIGINT                      NOT NULL REFERENCES zone(id),
+    location_id     BIGINT,                     NOT NULL REFERENCES location(id),
     created_at      TIMESTAMP WITH TIME ZONE    NOT NULL,
     updated_at      TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT now()
 );
@@ -111,9 +131,10 @@ CREATE TABLE IF NOT EXISTS receiver(
 CREATE TABLE IF NOT EXISTS outbound_shipment(
     id                      BIGSERIAL                   PRIMARY KEY,
     code                    VARCHAR                     NOT NULL UNIQUE,
-    external_shipment_id    BIGINT,
+    external_shipment_id    VARCHAR,
     receiver_id             BIGINT                      NOT NULL REFERENCES receiver(id),
     status                  VARCHAR                     NOT NULL,
     created_at              TIMESTAMP WITH TIME ZONE    NOT NULL,
     updated_at              TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT now()
 );
+CREATE INDEX outbound_shipment_external_shipment_id ON outbound_shipment(external_shipment_id);

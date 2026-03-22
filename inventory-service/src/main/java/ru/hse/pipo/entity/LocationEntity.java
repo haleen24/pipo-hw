@@ -29,6 +29,9 @@ public class LocationEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "zone_id")
     private ZoneEntity zone;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_type_id")
+    private LocationTypeEntity locationTypeEntity;
     @CreationTimestamp
     private OffsetDateTime createdAt;
     @UpdateTimestamp
