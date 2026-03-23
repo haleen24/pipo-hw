@@ -193,6 +193,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SupplierResponse'
+  /api/v1/product:
+    post:
+      tags: [ Product ]
+      summary: register product
+      operationId: createProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductRequest'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+  /api/v1/product/{code}:
+    get:
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema: { type: string }
+      tags: [ Product ]
+      summary: get product
+      operationId: getProduct
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
 
 components:
   schemas:
@@ -280,4 +315,23 @@ components:
         code: { type: string }
         createdAt: { type: string, format: date-time }
         updatedAt: { type: string, format: date-time }
-
+    CreateProductRequest:
+      type: object
+      required: [ code, name, length, width, height ]
+      properties:
+        code: { type: string }
+        name: { type: string }
+        lengthCm: { type: integer, format: int64 }
+        widthCm: { type: integer, format: int64 }
+        heightCm: { type: integer, format: int64 }
+    ProductResponse:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        code: { type: string }
+        name: { type: string }
+        lengthCm: { type: integer, format: int64 }
+        widthCm: { type: integer, format: int64 }
+        heightCm: { type: integer, format: int64 }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }

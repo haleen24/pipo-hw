@@ -138,6 +138,5 @@ public class SupplierTest extends CommonTestConfiguration {
         assertEquals(HttpStatus.NOT_FOUND, errorException.getStatusCode());
         assertTrue(errorException.getResponseBodyAsString().contains(InventoryExceptionCode.SUPPLIER_NOT_FOUND.getCode()));
     }
-
 }
 

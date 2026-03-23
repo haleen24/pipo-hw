@@ -15,9 +15,10 @@ public enum InventoryExceptionCode {
     INBOUND_SHIPMENT_PLACED_NOT_IN_INBOUND("INV-006", "Can't place inbound shipment in not inbound location", HttpStatus.FORBIDDEN),
     NO_ROOM_FOR_SHIPMENT_UNIT_IN_LOCATION("INV-007", "No room for shipment unit with id {%s} in location with code {%}",
         HttpStatus.CONFLICT),
-    SUPPLIER_CODE_NOT_UNIQUE("INV-008", "Supplier code is not unique", HttpStatus.CONFLICT);
+    SUPPLIER_CODE_NOT_UNIQUE("INV-008", "Supplier code is not unique", HttpStatus.CONFLICT),
+    PRODUCT_CODE_NOT_UNIQUE("INV-009", "Product code is not unique", HttpStatus.CONFLICT);
 
     private final String code;
     private final String message;
     private final HttpStatus httpStatus;
-    }
+}

@@ -13,9 +13,9 @@ public class Product {
     private Long id;
     private String code;
     private String name;
-    private Integer lengthCm;
-    private Integer widthCm;
-    private Integer heightCm;
+    private Long lengthCm;
+    private Long widthCm;
+    private Long heightCm;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
 }
