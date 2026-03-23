@@ -16,7 +16,10 @@ public enum InventoryExceptionCode {
     NO_ROOM_FOR_SHIPMENT_UNIT_IN_LOCATION("INV-007", "No room for shipment unit with id {%s} in location with code {%}",
         HttpStatus.CONFLICT),
     SUPPLIER_CODE_NOT_UNIQUE("INV-008", "Supplier code is not unique", HttpStatus.CONFLICT),
-    PRODUCT_CODE_NOT_UNIQUE("INV-009", "Product code is not unique", HttpStatus.CONFLICT);
+    PRODUCT_CODE_NOT_UNIQUE("INV-009", "Product code is not unique", HttpStatus.CONFLICT),
+    ZONE_CODE_NOT_UNIQUE("INV-010", "Zone code is not unique", HttpStatus.CONFLICT),
+    ZONE_NOT_FOUND("INV-011", "Zone with code {%s} not found", HttpStatus.NOT_FOUND),
+    CANT_DELETE_ZONE_RELATED_TO_LOCATION("INV-012", "Can't delete zone with code {%s}, related to locations", HttpStatus.FORBIDDEN);
 
     private final String code;
     private final String message;

@@ -20,7 +20,6 @@ import static ru.hse.pipo.exception.InventoryExceptionCode.PRODUCT_CODE_NOT_UNIQ
 import static ru.hse.pipo.exception.InventoryExceptionCode.PRODUCT_NOT_FOUND;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-
 public class ProductTest extends CommonTestConfiguration {
     final String URL_BY_CODE = "/product/%s";
     final String URL = "/product";

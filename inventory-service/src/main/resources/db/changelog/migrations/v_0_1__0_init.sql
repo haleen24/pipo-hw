@@ -65,15 +65,14 @@ INSERT INTO location_type(code, unlimited, created_at, updated_at) VALUES
 
 CREATE TABLE IF NOT EXISTS zone(
     id          BIGSERIAL                   PRIMARY KEY,
-    code        VARCHAR                     NOT NULL,
+    code        VARCHAR                     NOT NULL UNIQUE,
     type        VARCHAR                     NOT NULL,
     created_at  TIMESTAMP WITH TIME ZONE    NOT NULL,
-    updated_at  TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT now(),
-    UNIQUE(code, type)
+    updated_at  TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT now()
 );
 INSERT INTO zone (code, type, created_at, updated_at) VALUES
-    ('DROPPING', 'INBOUND', now(), now()),
-    ('DROPPING', 'STORAGE', now(), now());
+    ('DROPPING_INBOUND', 'INBOUND', now(), now()),
+    ('DROPPING_STORAGE', 'STORAGE', now(), now());
 
 
 CREATE TABLE IF NOT EXISTS location(

@@ -12,6 +12,8 @@ tags:
     description: Endpoints for supplier manipulation
   - name: Product
     description: Endpoints for product manipulation
+  - name: Zone
+    description: Endpoints for zone manipulation
   - name: Location
     description: Endpoints for location manipulation
 
@@ -228,6 +230,53 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProductResponse'
+  /api/v1/zone:
+    post:
+      tags: [ Zone ]
+      summary: register zone
+      operationId: createZone
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateZoneRequest'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZoneResponse'
+  /api/v1/zone/{code}:
+    get:
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema: { type: string }
+      tags: [ Zone ]
+      summary: get zone
+      operationId: getZone
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZoneResponse'
+    delete:
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema: { type: string }
+      tags: [ Zone ]
+      summary: delete zone
+      operationId: deleteZone
+      responses:
+        '204':
+          description: OK
 
 components:
   schemas:
@@ -333,5 +382,19 @@ components:
         lengthCm: { type: integer, format: int64 }
         widthCm: { type: integer, format: int64 }
         heightCm: { type: integer, format: int64 }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+    CreateZoneRequest:
+      type: object
+      required: [ code, type ]
+      properties:
+        code: { type: string }
+        type: { type: string }
+    ZoneResponse:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        code: { type: string }
+        type: { type: string }
         createdAt: { type: string, format: date-time }
         updatedAt: { type: string, format: date-time }
