@@ -82,17 +82,17 @@ public class DataGenerator {
         return locationTypeRepository.save(locationTypeEntity);
     }
 
-    public ZoneEntity generateZone() {
+    public ZoneEntity generateZone(ZoneType zoneType) {
         ZoneEntity zoneEntity = ZoneEntity.builder()
             .code(generateString())
-            .type(ZoneType.INBOUND.name())
+            .type(zoneType.name())
             .build();
         return zoneRepository.save(zoneEntity);
     }
 
-    public LocationEntity generateLocation() {
+    public LocationEntity generateLocation(ZoneType zoneType) {
         LocationTypeEntity locationTypeEntity = generateLocationType();
-        ZoneEntity zoneEntity = generateZone();
+        ZoneEntity zoneEntity = generateZone(zoneType);
         LocationEntity locationEntity = LocationEntity.builder()
             .code(generateString())
             .locationType(locationTypeEntity)

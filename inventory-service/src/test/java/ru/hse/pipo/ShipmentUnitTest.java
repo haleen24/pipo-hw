@@ -7,12 +7,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import ru.hse.inventory.model.CreateShipmentUnitRequest;
+import ru.hse.inventory.model.MoveShipmentUnitRequest;
 import ru.hse.inventory.model.ShipmentUnitResponse;
 import ru.hse.pipo.entity.LocationEntity;
+import ru.hse.pipo.entity.ProductEntity;
 import ru.hse.pipo.entity.ShipmentEntity;
 import ru.hse.pipo.entity.ShipmentUnitEntity;
+import ru.hse.pipo.entity.SupplierEntity;
 import ru.hse.pipo.exception.InventoryExceptionCode;
 import ru.hse.pipo.model.ShipmentStatus;
+import ru.hse.pipo.model.ZoneType;
 import ru.hse.pipo.repository.ShipmentRepository;
 import ru.hse.pipo.repository.ShipmentUnitRepository;
 import ru.hse.pipo.utils.DataGenerator;
@@ -54,7 +58,7 @@ public class ShipmentUnitTest extends CommonTestConfiguration {
     @Test
     void getShipmentUnitSuccessTest() {
         ShipmentEntity shipmentEntity = dataGenerator.generateShipment();
-        LocationEntity locationEntity = dataGenerator.generateLocation();
+        LocationEntity locationEntity = dataGenerator.generateLocation(ZoneType.INBOUND);
         ShipmentUnitEntity shipmentUnitEntity = ShipmentUnitEntity.builder()
             .shipment(shipmentEntity)
             .amount(generateLong())
@@ -101,5 +105,101 @@ public class ShipmentUnitTest extends CommonTestConfiguration {
         assertNull(shipmentResponse.getLocationCode());
         shipmentEntity = shipmentRepository.findById(shipmentEntity.getId()).orElseThrow();
         assertEquals(ShipmentStatus.IN_PROCESS.name(), shipmentEntity.getStatus());
+    }
+
+    @Test
+    void moveShipmentUnitSuccessTest() {
+        ShipmentEntity shipmentEntity = dataGenerator.generateShipment();
+        LocationEntity locationEntity = dataGenerator.generateLocation(ZoneType.INBOUND);
+        ShipmentUnitEntity shipmentUnitEntity = ShipmentUnitEntity.builder()
+            .shipment(shipmentEntity)
+            .amount(generateLong())
+            .widthCm(generateLong())
+            .heightCm(generateLong())
+            .lengthCm(generateLong())
+            .build();
+        shipmentUnitRepository.save(shipmentUnitEntity);
+        MoveShipmentUnitRequest moveShipmentUnitRequest = new MoveShipmentUnitRequest();
+        moveShipmentUnitRequest.setLocationCode(locationEntity.getCode());
+
+        ResponseEntity<ShipmentUnitResponse> response =
+            restClient.put().uri(URL_BY_ID.formatted(shipmentUnitEntity.getId())).body(moveShipmentUnitRequest).retrieve()
+                .toEntity(ShipmentUnitResponse.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        ShipmentUnitResponse shipmentUnitResponse = response.getBody();
+        assertNotNull(shipmentUnitResponse);
+        assertEquals(locationEntity.getCode(), shipmentUnitResponse.getLocationCode());
+    }
+
+    @Test
+    void moveShipmentUnitErrorWhenMoveToStorageTest() {
+        ShipmentEntity shipmentEntity = dataGenerator.generateShipment();
+        LocationEntity locationEntity = dataGenerator.generateLocation(ZoneType.STORAGE);
+        ShipmentUnitEntity shipmentUnitEntity = ShipmentUnitEntity.builder()
+            .shipment(shipmentEntity)
+            .amount(generateLong())
+            .widthCm(generateLong())
+            .heightCm(generateLong())
+            .lengthCm(generateLong())
+            .build();
+        shipmentUnitRepository.save(shipmentUnitEntity);
+        MoveShipmentUnitRequest moveShipmentUnitRequest = new MoveShipmentUnitRequest();
+        moveShipmentUnitRequest.setLocationCode(locationEntity.getCode());
+
+        HttpClientErrorException errorException = assertThrows(HttpClientErrorException.class,
+            () -> restClient.put()
+                .uri(URL_BY_ID.formatted(shipmentUnitEntity.getId()))
+                .body(moveShipmentUnitRequest)
+                .retrieve()
+                .toEntity(ShipmentUnitResponse.class)
+        );
+
+        assertEquals(HttpStatus.FORBIDDEN, errorException.getStatusCode());
+    }
+
+    @Test
+    void moveShipmentUnitSuccessAndCompleteShipmentWhenShipmentUnitIsLastTest() {
+        SupplierEntity supplierEntity = dataGenerator.generateSupplier();
+        ProductEntity productEntity = dataGenerator.generateProduct();
+        ShipmentEntity shipmentEntity = ShipmentEntity.builder()
+            .shipmentUnitCount(2L)
+            .externalShipmentId(generateString())
+            .product(productEntity)
+            .supplier(supplierEntity)
+            .status(ShipmentStatus.IN_PROCESS.name())
+            .build();
+        shipmentRepository.save(shipmentEntity);
+        LocationEntity locationEntity = dataGenerator.generateLocation(ZoneType.INBOUND);
+        ShipmentUnitEntity firstShipmentUnitEntity = ShipmentUnitEntity.builder()
+            .shipment(shipmentEntity)
+            .amount(generateLong())
+            .widthCm(generateLong())
+            .heightCm(generateLong())
+            .lengthCm(generateLong())
+            .location(locationEntity)
+            .build();
+        shipmentUnitRepository.save(firstShipmentUnitEntity);
+        ShipmentUnitEntity secondShipmentUnitEntity = ShipmentUnitEntity.builder()
+            .shipment(shipmentEntity)
+            .amount(generateLong())
+            .heightCm(generateLong())
+            .widthCm(generateLong())
+            .lengthCm(generateLong())
+            .build();
+        MoveShipmentUnitRequest moveShipmentUnitRequest = new MoveShipmentUnitRequest();
+        moveShipmentUnitRequest.setLocationCode(locationEntity.getCode());
+        shipmentUnitRepository.save(secondShipmentUnitEntity);
+
+        ResponseEntity<ShipmentUnitResponse> response =
+            restClient.put().uri(URL_BY_ID.formatted(secondShipmentUnitEntity.getId())).body(moveShipmentUnitRequest).retrieve()
+                .toEntity(ShipmentUnitResponse.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        ShipmentUnitResponse shipmentUnitResponse = response.getBody();
+        assertNotNull(shipmentUnitResponse);
+        assertEquals(locationEntity.getCode(), shipmentUnitResponse.getLocationCode());
+        assertEquals(ShipmentStatus.COMPLETE.name(), shipmentUnitResponse.getShipmentStatus());
+        assertEquals(ShipmentStatus.COMPLETE.name(), shipmentRepository.findById(shipmentEntity.getId()).get().getStatus());
     }
 }

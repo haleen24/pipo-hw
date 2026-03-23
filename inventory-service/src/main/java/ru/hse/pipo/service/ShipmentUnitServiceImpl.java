@@ -70,6 +70,9 @@ public class ShipmentUnitServiceImpl implements ShipmentUnitService {
     }
 
     private void validateSize(ShipmentUnit shipmentUnit, Location location) {
+        if (location.getLocationType().getUnlimited()) {
+            return;
+        }
         List<Long> shipmentUnitDimensions = Stream.of(shipmentUnit.getHeightCm(), shipmentUnit.getWidthCm(), shipmentUnit.getLengthCm())
             .sorted()
             .toList();
