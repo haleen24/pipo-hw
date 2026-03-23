@@ -8,6 +8,12 @@ tags:
     description: Endpoints for registration and login
   - name: Shipment
     description: Endpoints for shipment manipulation
+  - name: Supplier
+    description: Endpoints for supplier manipulation
+  - name: Product
+    description: Endpoints for product manipulation
+  - name: Location
+    description: Endpoints for location manipulation
 
 paths:
   /public/auth/register:
@@ -135,6 +141,59 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ShipmentUnitResponse'
+  /api/v1/supplier:
+    post:
+      tags: [ Supplier ]
+      summary: register supplier
+      operationId: createSupplier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSupplierRequest'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupplierResponse'
+  /api/v1/supplier/{code}:
+    parameters:
+      - name: code
+        in: path
+        required: true
+        schema: { type: string }
+    get:
+      tags: [ Supplier ]
+      summary: get supplier info
+      operationId: getSupplier
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupplierResponse'
+    patch:
+      tags: [ Supplier ]
+      summary: patch supplier
+      operationId: patchSupplier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchSupplierRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupplierResponse'
+
 components:
   schemas:
     RegisterRequest:
@@ -200,6 +259,25 @@ components:
         lengthCm: { type: integer, format: int64 }
         widthCm: { type: integer, format: int64 }
         heightCm: { type: integer, format: int64 }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+    CreateSupplierRequest:
+      type: object
+      required: [ name, code ]
+      properties:
+        name: { type: string }
+        code: { type: string }
+    PatchSupplierRequest:
+      type: object
+      properties:
+        name: { type: string }
+        code: { type: string }
+    SupplierResponse:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        name: { type: string }
+        code: { type: string }
         createdAt: { type: string, format: date-time }
         updatedAt: { type: string, format: date-time }
 

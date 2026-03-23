@@ -156,6 +156,7 @@ public class ShipmentUnitTest extends CommonTestConfiguration {
         );
 
         assertEquals(HttpStatus.FORBIDDEN, errorException.getStatusCode());
+        assertTrue(errorException.getMessage().contains(InventoryExceptionCode.INBOUND_SHIPMENT_PLACED_NOT_IN_INBOUND.getCode()));
     }
 
     @Test

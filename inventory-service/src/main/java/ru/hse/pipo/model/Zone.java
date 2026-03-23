@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Zone {
+    private Long id;
     private String code;
     private ZoneType type;
     private OffsetDateTime createdAt;
