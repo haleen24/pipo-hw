@@ -25,9 +25,9 @@ public class LocationTypeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String code;
-    private Integer lengthCm;
-    private Integer widthCm;
-    private Integer heightCm;
+    private Long lengthCm;
+    private Long widthCm;
+    private Long heightCm;
     private Boolean unlimited;
     @CreationTimestamp
     private OffsetDateTime createdAt;

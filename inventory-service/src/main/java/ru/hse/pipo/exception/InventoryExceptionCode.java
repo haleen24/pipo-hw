@@ -19,7 +19,13 @@ public enum InventoryExceptionCode {
     PRODUCT_CODE_NOT_UNIQUE("INV-009", "Product code is not unique", HttpStatus.CONFLICT),
     ZONE_CODE_NOT_UNIQUE("INV-010", "Zone code is not unique", HttpStatus.CONFLICT),
     ZONE_NOT_FOUND("INV-011", "Zone with code {%s} not found", HttpStatus.NOT_FOUND),
-    CANT_DELETE_ZONE_RELATED_TO_LOCATION("INV-012", "Can't delete zone with code {%s}, related to locations", HttpStatus.FORBIDDEN);
+    CANT_DELETE_ZONE_RELATED_TO_LOCATION("INV-012", "Can't delete zone with code {%s}, related to locations", HttpStatus.FORBIDDEN),
+    CANT_DELETE_LOCATION_TYPE_RELATED_TO_LOCATION("INV-013", "Can't delete location type with code {%s}, related to location",
+        HttpStatus.FORBIDDEN),
+    LOCATION_TYPE_NOT_FOUND("INV-014", "Location type with code {%s} not found", HttpStatus.NOT_FOUND),
+    CANT_CREATE_LOCATION_TYPE_WITHOUT_DIMENSIONS("INV-015", "Can't create location type without dimensions", HttpStatus.BAD_REQUEST),
+    LOCATION_TYPE_CODE_IS_NOT_UNIQUE("INV-016", "Location type with code {%s} already exists", HttpStatus.CONFLICT),
+    LOCATION_CODE_IS_NOT_UNIQUE("INV-017", "Location with code {%s} already exists", HttpStatus.CONFLICT);
 
     private final String code;
     private final String message;

@@ -277,6 +277,100 @@ paths:
       responses:
         '204':
           description: OK
+  /api/v1/locationType:
+    post:
+      tags: [ Location ]
+      summary: register location type
+      operationId: createLocationType
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLocationTypeRequest'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationTypeResponse'
+  /api/v1/locationType/{code}:
+    get:
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema: { type: string }
+      tags: [ Location ]
+      summary: get location type
+      operationId: getLocationType
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationTypeResponse'
+    delete:
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema: { type: string }
+      tags: [ Location ]
+      summary: delete location type
+      operationId: deleteLocationType
+      responses:
+        '204':
+          description: OK
+  /api/v1/location:
+    post:
+      tags: [ Location ]
+      summary: register location
+      operationId: createLocation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLocationRequest'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationResponse'
+  /api/v1/location/{code}:
+    get:
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema: { type: string }
+      tags: [ Location ]
+      summary: get location
+      operationId: getLocation
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationResponse'
+    delete:
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema: { type: string }
+      tags: [ Location ]
+      summary: delete location
+      operationId: deleteLocation
+      responses:
+        '204':
+          description: OK
 
 components:
   schemas:
@@ -396,5 +490,41 @@ components:
         id: { type: integer, format: int64 }
         code: { type: string }
         type: { type: string }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+    CreateLocationTypeRequest:
+      type: object
+      required: [ code ]
+      properties:
+        code: { type: string }
+        lengthCm: { type: integer, format: int64 }
+        widthCm: { type: integer, format: int64 }
+        heightCm: { type: integer, format: int64 }
+        unlimited: { type: boolean, default: false }
+    LocationTypeResponse:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        code: { type: string }
+        lengthCm: { type: integer, format: int64 }
+        widthCm: { type: integer, format: int64 }
+        heightCm: { type: integer, format: int64 }
+        unlimited: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+    CreateLocationRequest:
+      type: object
+      required: [ code, locationTypeCode, zoneCode ]
+      properties:
+        code: { type: string }
+        locationTypeCode: { type: string }
+        zoneCode: { type: string }
+    LocationResponse:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        code: { type: string }
+        locationTypeCode: { type: string }
+        zoneCode: { type: string }
         createdAt: { type: string, format: date-time }
         updatedAt: { type: string, format: date-time }

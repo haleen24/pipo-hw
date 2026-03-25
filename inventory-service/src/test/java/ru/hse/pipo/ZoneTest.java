@@ -89,7 +89,7 @@ public class ZoneTest extends CommonTestConfiguration {
     }
 
     @Test
-    void zoneGetErrorTestWhenSupplierNotExist() {
+    void zoneGetErrorTestWhenZoneNotExist() {
         HttpClientErrorException errorException = assertThrows(HttpClientErrorException.class,
             () -> restClient.get()
                 .uri(URL_BY_CODE.formatted(generateString()))
