@@ -38,4 +38,13 @@ public class OutboundServiceImpl implements OutboundService {
             InventoryExceptionCode.OUTBOUND_SHIPMENT_NOT_FOUND, id.toString()));
         return outboundShipmentMapper.toOutboundShipment(outboundShipmentEntity);
     }
+
+    @Override
+    public OutboundShipment fail(Long id) {
+        OutboundShipment outboundShipment = get(id);
+        outboundShipment.setStatus(OutboundShipmentStatus.CANCELED.name());
+        OutboundShipmentEntity outboundShipmentEntity = outboundShipmentMapper.toOutboundShipmentEntity(outboundShipment);
+        OutboundShipmentEntity updatedOutboundShipmentEntity = outboundShipmentRepository.save(outboundShipmentEntity);
+        return outboundShipmentMapper.toOutboundShipment(updatedOutboundShipmentEntity);
+    }
 }

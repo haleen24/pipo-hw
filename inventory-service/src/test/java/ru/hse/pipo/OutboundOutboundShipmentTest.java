@@ -116,6 +116,21 @@ public class OutboundOutboundShipmentTest extends CommonTestConfiguration {
         assertTrue(body.contains(InventoryExceptionCode.NOT_ENOUGH_STOCK.getCode()));
     }
 
+    @Test
+    void failOutboundShipmentSuccessTest() {
+        OutboundShipmentEntity outboundOutboundShipmentEntity = dataGenerator.generateOutboundShipment();
+
+        ResponseEntity<OutboundShipmentResponse> response =
+            restClient.put().uri(URL_BY_ID.formatted(outboundOutboundShipmentEntity.getId())).retrieve()
+                .toEntity(OutboundShipmentResponse.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        OutboundShipmentResponse outboundOutboundShipmentResponse = response.getBody();
+        assertNotNull(outboundOutboundShipmentResponse);
+        assertNotNull(outboundOutboundShipmentResponse.getId());
+        assertEquals(outboundOutboundShipmentResponse.getStatus(), OutboundShipmentStatus.CANCELED.name());
+    }
+
     private static @NotNull CreateOutboundShipmentRequest getCreateOutboundShipmentRequest(ReceiverEntity receiverEntity,
                                                                                            ProductEntity productEntity, Long productCount) {
         CreateOutboundShipmentRequest createOutboundShipmentRequest = new CreateOutboundShipmentRequest();

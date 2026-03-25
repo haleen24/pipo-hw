@@ -447,7 +447,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OutboundShipmentResponse'
-
+    put:
+      tags: [ Outbound ]
+      summary: fail outbound shipment
+      operationId: failOutboundShipment
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutboundShipmentResponse'
 components:
   schemas:
     RegisterRequest:

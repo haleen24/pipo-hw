@@ -6,4 +6,6 @@ public interface OutboundService {
     OutboundShipment create(OutboundShipment outboundShipment);
 
     OutboundShipment get(Long id);
+
+    OutboundShipment fail(Long id);
 }

@@ -26,6 +26,13 @@ public class OutboundController implements OutboundApi {
     }
 
     @Override
+    public ResponseEntity<OutboundShipmentResponse> failOutboundShipment(Long id) {
+        OutboundShipment outboundShipment = outboundService.fail(id);
+        OutboundShipmentResponse outboundShipmentResponse = outboundShipmentMapper.toOutboundShipmentResponse(outboundShipment);
+        return ResponseEntity.ok(outboundShipmentResponse);
+    }
+
+    @Override
     public ResponseEntity<OutboundShipmentResponse> getOutboundShipment(Long id) {
         OutboundShipment outboundShipment = outboundService.get(id);
         OutboundShipmentResponse outboundShipmentResponse = outboundShipmentMapper.toOutboundShipmentResponse(outboundShipment);

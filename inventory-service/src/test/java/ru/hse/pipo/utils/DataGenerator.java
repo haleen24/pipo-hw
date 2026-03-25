@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.hse.pipo.entity.LocationEntity;
 import ru.hse.pipo.entity.LocationTypeEntity;
+import ru.hse.pipo.entity.OutboundShipmentEntity;
 import ru.hse.pipo.entity.ProductEntity;
 import ru.hse.pipo.entity.ReceiverEntity;
 import ru.hse.pipo.entity.ShipmentEntity;
@@ -14,6 +15,7 @@ import ru.hse.pipo.model.ShipmentStatus;
 import ru.hse.pipo.model.ZoneType;
 import ru.hse.pipo.repository.LocationRepository;
 import ru.hse.pipo.repository.LocationTypeRepository;
+import ru.hse.pipo.repository.OutboundShipmentRepository;
 import ru.hse.pipo.repository.ProductRepository;
 import ru.hse.pipo.repository.ReceiverRepository;
 import ru.hse.pipo.repository.ShipmentRepository;
@@ -50,6 +52,9 @@ public class DataGenerator {
 
     @Autowired
     ReceiverRepository receiverRepository;
+
+    @Autowired
+    OutboundShipmentRepository outboundShipmentRepository;
 
 
     public SupplierEntity generateSupplier() {
@@ -127,5 +132,16 @@ public class DataGenerator {
             .location(locationEntity)
             .build();
         return stockRepository.save(stockEntity);
+    }
+
+    public OutboundShipmentEntity generateOutboundShipment() {
+        ReceiverEntity receiverEntity = generateReceiver();
+        ProductEntity productEntity = generateProduct();
+        OutboundShipmentEntity outboundShipmentEntity = OutboundShipmentEntity.builder()
+            .receiver(receiverEntity)
+            .externalShipmentId(generateString())
+            .status(ShipmentStatus.IN_PROCESS.name())
+            .build();
+        return outboundShipmentRepository.save(outboundShipmentEntity);
     }
 }
