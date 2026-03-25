@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.hse.pipo.entity.LocationEntity;
 import ru.hse.pipo.entity.LocationTypeEntity;
 import ru.hse.pipo.entity.ProductEntity;
+import ru.hse.pipo.entity.ReceiverEntity;
 import ru.hse.pipo.entity.ShipmentEntity;
 import ru.hse.pipo.entity.SupplierEntity;
 import ru.hse.pipo.entity.ZoneEntity;
@@ -13,6 +14,7 @@ import ru.hse.pipo.model.ZoneType;
 import ru.hse.pipo.repository.LocationRepository;
 import ru.hse.pipo.repository.LocationTypeRepository;
 import ru.hse.pipo.repository.ProductRepository;
+import ru.hse.pipo.repository.ReceiverRepository;
 import ru.hse.pipo.repository.ShipmentRepository;
 import ru.hse.pipo.repository.SupplierRepository;
 import ru.hse.pipo.repository.ZoneRepository;
@@ -40,6 +42,9 @@ public class DataGenerator {
 
     @Autowired
     LocationRepository locationRepository;
+
+    @Autowired
+    ReceiverRepository receiverRepository;
 
 
     public SupplierEntity generateSupplier() {
@@ -99,5 +104,13 @@ public class DataGenerator {
             .zone(zoneEntity)
             .build();
         return locationRepository.save(locationEntity);
+    }
+
+    public ReceiverEntity generateReceiver() {
+        ReceiverEntity receiverEntity = ReceiverEntity.builder()
+            .code(generateString())
+            .name(generateString())
+            .build();
+        return receiverRepository.save(receiverEntity);
     }
 }

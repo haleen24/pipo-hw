@@ -3,9 +3,12 @@ package ru.hse.pipo.entity;
 import java.time.OffsetDateTime;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,9 +25,11 @@ public class WithdrawalEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String productLocationCode;
     private String productCode;
     private Long amount;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "outbound_shipment_id")
+    private OutboundShipmentEntity outboundShipmentEntity;
     private String status;
     @CreationTimestamp
     private OffsetDateTime createdAt;

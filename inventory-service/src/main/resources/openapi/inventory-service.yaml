@@ -16,6 +16,12 @@ tags:
     description: Endpoints for zone manipulation
   - name: Location
     description: Endpoints for location manipulation
+  - name: Receiver
+    description: Endpoints for receiver manipulation
+  - name: Stock
+    description: Endpoints for stock manipulation
+  - name: Withdrawal
+    description: Endpoints for withdrawal manipulation
 
 paths:
   /public/auth/register:
@@ -371,6 +377,41 @@ paths:
       responses:
         '204':
           description: OK
+  /api/v1/receiver:
+    post:
+      tags: [ Receiver ]
+      summary: register receiver
+      operationId: createReceiver
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReceiverRequest'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiverResponse'
+  /api/v1/receiver/{code}:
+    parameters:
+      - name: code
+        in: path
+        required: true
+        schema: { type: string }
+    get:
+      tags: [ Receiver ]
+      summary: get receiver info
+      operationId: getReceiver
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiverResponse'
 
 components:
   schemas:
@@ -526,5 +567,19 @@ components:
         code: { type: string }
         locationTypeCode: { type: string }
         zoneCode: { type: string }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+    CreateReceiverRequest:
+      type: object
+      required: [ code, name ]
+      properties:
+        code: { type: string }
+        name: { type: string }
+    ReceiverResponse:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        code: { type: string }
+        name: { type: string }
         createdAt: { type: string, format: date-time }
         updatedAt: { type: string, format: date-time }

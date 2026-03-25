@@ -110,16 +110,6 @@ CREATE TABLE IF NOT EXISTS stock(
     UNIQUE(product_id, location_id)
 );
 
-CREATE TABLE IF NOT EXISTS withdrawal(
-    id                      BIGSERIAL                   PRIMARY KEY,
-    product_location_code   VARCHAR                     NOT NULL,
-    product_code            VARCHAR                     NOT NULL,
-    amount                  BIGINT                      NOT NULL,
-    status                  VARCHAR                     NOT NULL,
-    created_at              TIMESTAMP WITH TIME ZONE    NOT NULL,
-    updated_at              TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT now()
-);
-
 CREATE TABLE IF NOT EXISTS receiver(
     id          BIGSERIAL                   PRIMARY KEY,
     name        VARCHAR                     NOT NULL,
@@ -138,3 +128,13 @@ CREATE TABLE IF NOT EXISTS outbound_shipment(
     updated_at              TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT now()
 );
 CREATE INDEX outbound_shipment_external_shipment_id ON outbound_shipment(external_shipment_id);
+
+CREATE TABLE IF NOT EXISTS withdrawal(
+    id                      BIGSERIAL                   PRIMARY KEY,
+    product_code            VARCHAR                     NOT NULL,
+    amount                  BIGINT                      NOT NULL,
+    status                  VARCHAR                     NOT NULL,
+    outbound_shipment_id    BIGINT                      NOT NULL REFERENCES outbound_shipment(id),
+    created_at              TIMESTAMP WITH TIME ZONE    NOT NULL,
+    updated_at              TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT now()
+);
