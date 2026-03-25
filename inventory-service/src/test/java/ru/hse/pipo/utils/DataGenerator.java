@@ -7,6 +7,7 @@ import ru.hse.pipo.entity.LocationTypeEntity;
 import ru.hse.pipo.entity.ProductEntity;
 import ru.hse.pipo.entity.ReceiverEntity;
 import ru.hse.pipo.entity.ShipmentEntity;
+import ru.hse.pipo.entity.StockEntity;
 import ru.hse.pipo.entity.SupplierEntity;
 import ru.hse.pipo.entity.ZoneEntity;
 import ru.hse.pipo.model.ShipmentStatus;
@@ -16,6 +17,7 @@ import ru.hse.pipo.repository.LocationTypeRepository;
 import ru.hse.pipo.repository.ProductRepository;
 import ru.hse.pipo.repository.ReceiverRepository;
 import ru.hse.pipo.repository.ShipmentRepository;
+import ru.hse.pipo.repository.StockRepository;
 import ru.hse.pipo.repository.SupplierRepository;
 import ru.hse.pipo.repository.ZoneRepository;
 
@@ -42,6 +44,9 @@ public class DataGenerator {
 
     @Autowired
     LocationRepository locationRepository;
+
+    @Autowired
+    StockRepository stockRepository;
 
     @Autowired
     ReceiverRepository receiverRepository;
@@ -112,5 +117,15 @@ public class DataGenerator {
             .name(generateString())
             .build();
         return receiverRepository.save(receiverEntity);
+    }
+
+    public StockEntity generateStock(ProductEntity productEntity, Long amount) {
+        LocationEntity locationEntity = generateLocation(ZoneType.STORAGE);
+        StockEntity stockEntity = StockEntity.builder()
+            .product(productEntity)
+            .amount(amount)
+            .location(locationEntity)
+            .build();
+        return stockRepository.save(stockEntity);
     }
 }

@@ -20,7 +20,7 @@ tags:
     description: Endpoints for receiver manipulation
   - name: Stock
     description: Endpoints for stock manipulation
-  - name: Withdrawal
+  - name: Outbound
     description: Endpoints for withdrawal manipulation
 
 paths:
@@ -412,6 +412,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReceiverResponse'
+  /api/v1/outboundShipment:
+    post:
+      tags: [ Outbound ]
+      summary: register outbound shipment
+      operationId: createOutboundShipment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOutboundShipmentRequest'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutboundShipmentResponse'
+  /api/v1/outboundShipment/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: integer, format: int64 }
+    get:
+      tags: [ Outbound ]
+      summary: get outbound shipment info
+      operationId: getOutboundShipment
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutboundShipmentResponse'
 
 components:
   schemas:
@@ -581,5 +616,28 @@ components:
         id: { type: integer, format: int64 }
         code: { type: string }
         name: { type: string }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+    CreateOutboundShipmentRequest:
+      type: object
+      required: [ receiverCode, products ]
+      properties:
+        receiverCode: { type: string }
+        externalShipmentId: { type: string }
+        products:
+          type: array
+          required: [ productCode, productCount ]
+          items:
+            type: object
+            properties:
+              productCode: { type: string }
+              productCount: { type: integer, format: int64 }
+    OutboundShipmentResponse:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        receiverCode: { type: string }
+        externalShipmentId: { type: string }
+        status: { type: string }
         createdAt: { type: string, format: date-time }
         updatedAt: { type: string, format: date-time }

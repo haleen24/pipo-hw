@@ -27,7 +27,9 @@ public enum InventoryExceptionCode {
     LOCATION_TYPE_CODE_IS_NOT_UNIQUE("INV-016", "Location type with code {%s} already exists", HttpStatus.CONFLICT),
     LOCATION_CODE_IS_NOT_UNIQUE("INV-017", "Location with code {%s} already exists", HttpStatus.CONFLICT),
     RECEIVER_CODE_IS_NOT_UNIQUE("INV-018", "Receiver with code {%s} already exists", HttpStatus.CONFLICT),
-    RECEIVER_NOT_FOUND("INV-019", "Receiver with code {%s} not found", HttpStatus.NOT_FOUND);
+    RECEIVER_NOT_FOUND("INV-019", "Receiver with code {%s} not found", HttpStatus.NOT_FOUND),
+    OUTBOUND_SHIPMENT_NOT_FOUND("INV-020", "Outbound shipment with id {%s} not found", HttpStatus.NOT_FOUND),
+    NOT_ENOUGH_STOCK("INV-021", "Not enough stock for product with code {%s}. Required: {%s}, available: {%s}", HttpStatus.BAD_REQUEST);
 
     private final String code;
     private final String message;

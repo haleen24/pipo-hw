@@ -120,7 +120,6 @@ CREATE TABLE IF NOT EXISTS receiver(
 
 CREATE TABLE IF NOT EXISTS outbound_shipment(
     id                      BIGSERIAL                   PRIMARY KEY,
-    code                    VARCHAR                     NOT NULL UNIQUE,
     external_shipment_id    VARCHAR,
     receiver_id             BIGINT                      NOT NULL REFERENCES receiver(id),
     status                  VARCHAR                     NOT NULL,
