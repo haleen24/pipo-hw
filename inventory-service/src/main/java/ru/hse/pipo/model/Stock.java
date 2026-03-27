@@ -3,19 +3,17 @@ package ru.hse.pipo.model;
 import java.time.OffsetDateTime;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class OutboundShipment {
+public class Stock {
     private Long id;
-    private String externalShipmentId;
-    private Receiver receiver;
-    private OutboundShipmentStatus status;
+    private Location location;
+    private Product product;
+    private Long amount;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
 }

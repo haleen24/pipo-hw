@@ -29,7 +29,10 @@ public enum InventoryExceptionCode {
     RECEIVER_CODE_IS_NOT_UNIQUE("INV-018", "Receiver with code {%s} already exists", HttpStatus.CONFLICT),
     RECEIVER_NOT_FOUND("INV-019", "Receiver with code {%s} not found", HttpStatus.NOT_FOUND),
     OUTBOUND_SHIPMENT_NOT_FOUND("INV-020", "Outbound shipment with id {%s} not found", HttpStatus.NOT_FOUND),
-    NOT_ENOUGH_STOCK("INV-021", "Not enough stock for product with code {%s}. Required: {%s}, available: {%s}", HttpStatus.BAD_REQUEST);
+    NOT_ENOUGH_STOCK("INV-021", "Not enough stock for product with code {%s}. Required: {%s}, available: {%s}", HttpStatus.BAD_REQUEST),
+    STOCK_NOT_FOUND("INV-022", "Product with code {%s} not found in location with code {%s}", HttpStatus.NOT_FOUND),
+    OUTBOUND_SHIPMENT_CANCELED("INV-023", "Outbound shipment with id {%s} is canceled", HttpStatus.BAD_REQUEST),
+    WITHDRAWAL_NOT_FOUND("INV-024", "Withdrawal with id {%s} not found",HttpStatus.NOT_FOUND);
 
     private final String code;
     private final String message;

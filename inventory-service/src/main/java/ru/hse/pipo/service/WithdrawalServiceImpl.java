@@ -15,6 +15,7 @@ import ru.hse.pipo.model.WithdrawalStatus;
 import ru.hse.pipo.repository.WithdrawalRepository;
 
 import static ru.hse.pipo.exception.InventoryExceptionCode.NOT_ENOUGH_STOCK;
+import static ru.hse.pipo.exception.InventoryExceptionCode.WITHDRAWAL_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -62,5 +63,17 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             })
             .toList();
         return withdrawalMapper.toWithdrawals(withdrawalRepository.saveAllAndFlush(withdrawalEntities));
+    }
+
+    @Override
+    public Withdrawal getById(Long id) {
+        WithdrawalEntity withdrawalEntity =
+            withdrawalRepository.findById(id).orElseThrow(() -> new InventoryException(WITHDRAWAL_NOT_FOUND, id.toString()));
+        return withdrawalMapper.toWithdrawal(withdrawalEntity);
+    }
+
+    @Override
+    public void update(Withdrawal withdrawal) {
+        withdrawalRepository.save(withdrawalMapper.toWithdrawalEntity(withdrawal));
     }
 }

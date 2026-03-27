@@ -1,6 +1,8 @@
 package ru.hse.pipo.service;
 
+import ru.hse.inventory.model.ProcessWithdrawalRequest;
 import ru.hse.pipo.model.OutboundShipmentWithWithdrawals;
+import ru.hse.pipo.model.Withdrawal;
 
 public interface OutboundService {
     OutboundShipmentWithWithdrawals create(OutboundShipmentWithWithdrawals outboundShipmentWithWithdrawals);
@@ -8,4 +10,6 @@ public interface OutboundService {
     OutboundShipmentWithWithdrawals get(Long id);
 
     OutboundShipmentWithWithdrawals fail(Long id);
+
+    Withdrawal processWithdrawal(Long withdrawalId, String locationCode);
 }

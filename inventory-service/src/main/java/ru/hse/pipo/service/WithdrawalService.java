@@ -11,4 +11,8 @@ public interface WithdrawalService {
     List<Withdrawal> getByOutboundShipmentId(Long outboundShipmentId);
 
     List<Withdrawal> fail(List<Withdrawal> withdrawals);
+
+    Withdrawal getById(Long id);
+
+    void update(Withdrawal withdrawal);
 }

@@ -7,8 +7,12 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.hse.inventory.controller.OutboundApi;
 import ru.hse.inventory.model.CreateOutboundShipmentRequest;
 import ru.hse.inventory.model.OutboundShipmentResponse;
+import ru.hse.inventory.model.ProcessWithdrawalRequest;
+import ru.hse.inventory.model.WithdrawalResponse;
 import ru.hse.pipo.mapper.OutboundShipmentMapper;
+import ru.hse.pipo.mapper.WithdrawalMapper;
 import ru.hse.pipo.model.OutboundShipmentWithWithdrawals;
+import ru.hse.pipo.model.Withdrawal;
 import ru.hse.pipo.service.OutboundService;
 
 @RestController
@@ -16,6 +20,7 @@ import ru.hse.pipo.service.OutboundService;
 public class OutboundController implements OutboundApi {
     private final OutboundService outboundService;
     private final OutboundShipmentMapper outboundShipmentMapper;
+    private final WithdrawalMapper withdrawalMapper;
 
     @Override
     public ResponseEntity<OutboundShipmentResponse> createOutboundShipment(CreateOutboundShipmentRequest createOutboundShipmentRequest) {
@@ -44,5 +49,12 @@ public class OutboundController implements OutboundApi {
             outboundShipmentMapper.toOutboundShipmentResponse(outboundShipmentWithWithdrawals.getOutboundShipment(),
                 outboundShipmentWithWithdrawals.getWithdrawals());
         return ResponseEntity.ok(outboundShipmentResponse);
+    }
+
+    @Override
+    public ResponseEntity<WithdrawalResponse> processWithdrawal(Long id, ProcessWithdrawalRequest processWithdrawalRequest) {
+        Withdrawal withdrawal = outboundService.processWithdrawal(id, processWithdrawalRequest.getLocationCode());
+        WithdrawalResponse withdrawalResponse = withdrawalMapper.toWithdrawalResponse(withdrawal);
+        return ResponseEntity.ok().body(withdrawalResponse);
     }
 }

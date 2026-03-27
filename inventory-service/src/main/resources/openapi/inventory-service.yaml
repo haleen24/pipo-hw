@@ -458,6 +458,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OutboundShipmentResponse'
+  /api/v1/withdrawal/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: integer, format: int64 }
+    put:
+      tags: [ Outbound ]
+      summary: process withdrawal
+      operationId: processWithdrawal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProcessWithdrawalRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WithdrawalResponse'
 components:
   schemas:
     RegisterRequest:
@@ -655,6 +678,11 @@ components:
             $ref: '#/components/schemas/WithdrawalResponse'
         createdAt: { type: string, format: date-time }
         updatedAt: { type: string, format: date-time }
+    ProcessWithdrawalRequest:
+      type: object
+      required: [ locationCode ]
+      properties:
+        locationCode: { type: string }
     WithdrawalResponse:
       type: object
       properties:

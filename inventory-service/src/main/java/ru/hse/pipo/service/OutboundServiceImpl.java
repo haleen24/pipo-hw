@@ -13,7 +13,9 @@ import ru.hse.pipo.model.OutboundShipment;
 import ru.hse.pipo.model.OutboundShipmentStatus;
 import ru.hse.pipo.model.OutboundShipmentWithWithdrawals;
 import ru.hse.pipo.model.Receiver;
+import ru.hse.pipo.model.Stock;
 import ru.hse.pipo.model.Withdrawal;
+import ru.hse.pipo.model.WithdrawalStatus;
 import ru.hse.pipo.repository.OutboundShipmentRepository;
 
 @Service
@@ -23,6 +25,7 @@ public class OutboundServiceImpl implements OutboundService {
     private final OutboundShipmentRepository outboundShipmentRepository;
     private final WithdrawalService withdrawalService;
     private final ReceiverService receiverService;
+    private final StockService stockService;
 
     @Override
     @Transactional
@@ -30,7 +33,7 @@ public class OutboundServiceImpl implements OutboundService {
         OutboundShipment outboundShipment = outboundShipmentWithWithdrawals.getOutboundShipment();
         Receiver receiver = receiverService.getByCode(outboundShipment.getReceiver().getCode());
         outboundShipment.setReceiver(receiver);
-        outboundShipment.setStatus(OutboundShipmentStatus.IN_PROCESS.name());
+        outboundShipment.setStatus(OutboundShipmentStatus.IN_PROCESS);
         OutboundShipmentEntity outboundShipmentEntity = outboundShipmentMapper.toOutboundShipmentEntity(outboundShipment);
         OutboundShipmentEntity createdOutboundShipmentEntity = outboundShipmentRepository.save(outboundShipmentEntity);
         OutboundShipment createdOutboundShipment = outboundShipmentMapper.toOutboundShipment(createdOutboundShipmentEntity);
@@ -49,16 +52,51 @@ public class OutboundServiceImpl implements OutboundService {
     public OutboundShipmentWithWithdrawals fail(Long id) {
         OutboundShipmentWithWithdrawals outboundShipmentWithWithdrawals = get(id);
         OutboundShipment outboundShipment = outboundShipmentWithWithdrawals.getOutboundShipment();
-        outboundShipment.setStatus(OutboundShipmentStatus.CANCELED.name());
+        outboundShipment.setStatus(OutboundShipmentStatus.CANCELED);
         OutboundShipmentEntity outboundShipmentEntity = outboundShipmentMapper.toOutboundShipmentEntity(outboundShipment);
         OutboundShipmentEntity updatedOutboundShipmentEntity = outboundShipmentRepository.save(outboundShipmentEntity);
         List<Withdrawal> withdrawals = withdrawalService.fail(outboundShipmentWithWithdrawals.getWithdrawals());
         return new OutboundShipmentWithWithdrawals(outboundShipmentMapper.toOutboundShipment(updatedOutboundShipmentEntity), withdrawals);
     }
 
+    @Override
+    @Transactional
+    public Withdrawal processWithdrawal(Long withdrawalId, String locationCode) {
+        Withdrawal withdrawal = withdrawalService.getById(withdrawalId);
+        OutboundShipment outboundShipment = withdrawal.getOutboundShipment();
+        if (outboundShipment.getStatus() == OutboundShipmentStatus.CANCELED) {
+            throw new InventoryException(InventoryExceptionCode.OUTBOUND_SHIPMENT_CANCELED, withdrawalId.toString());
+        }
+        List<Stock> stocksInLocation = stockService.getStockByLocationCode(locationCode);
+        String productCode = withdrawal.getProduct().getCode();
+        Stock stock = stocksInLocation.stream()
+            .filter(s -> s.getProduct().getCode().equals(productCode))
+            .findFirst().orElseThrow(
+                () -> new InventoryException(InventoryExceptionCode.STOCK_NOT_FOUND, productCode, locationCode));
+        if (stock.getAmount() < withdrawal.getAmount()) {
+            throw new InventoryException(InventoryExceptionCode.NOT_ENOUGH_STOCK, productCode, stock.getAmount().toString(),
+                withdrawal.getAmount().toString());
+        }
+        stock.setAmount(stock.getAmount() - withdrawal.getAmount());
+        stockService.update(stock);
+        withdrawal.setStatus(WithdrawalStatus.COMPLETED);
+        withdrawalService.update(withdrawal);
+        checkCompleteOutboundShipment(outboundShipment);
+        return withdrawal;
+    }
+
     private OutboundShipment getById(Long id) {
         OutboundShipmentEntity outboundShipmentEntity = outboundShipmentRepository.findById(id)
             .orElseThrow(() -> new InventoryException(InventoryExceptionCode.OUTBOUND_SHIPMENT_NOT_FOUND, id.toString()));
         return outboundShipmentMapper.toOutboundShipment(outboundShipmentEntity);
+    }
+
+    private void checkCompleteOutboundShipment(OutboundShipment outboundShipment) {
+        List<Withdrawal> withdrawals = withdrawalService.getByOutboundShipmentId(outboundShipment.getId());
+        if (withdrawals.stream().allMatch(w -> w.getStatus() == WithdrawalStatus.COMPLETED)) {
+            outboundShipment.setStatus(OutboundShipmentStatus.COMPLETED);
+            OutboundShipmentEntity outboundShipmentEntity = outboundShipmentMapper.toOutboundShipmentEntity(outboundShipment);
+            outboundShipmentRepository.save(outboundShipmentEntity);
+        }
     }
 }
