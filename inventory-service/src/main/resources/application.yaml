@@ -1,4 +1,7 @@
 spring:
+  servers:
+    - url : http://localhost:8080
+      description: inventory-service
   jpa:
     hibernate:
       ddl-auto: validate

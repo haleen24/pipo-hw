@@ -1,16 +1,3 @@
-CREATE TABLE IF NOT EXISTS users (
-    username VARCHAR NOT NULL PRIMARY KEY,
-    password VARCHAR NOT NULL,
-    enabled BOOLEAN NOT NULL
-);
---rollback DROP TABLE users
-
-CREATE TABLE IF NOT EXISTS authorities (
-    username VARCHAR NOT NULL REFERENCES users(username),
-    authority VARCHAR NOT NULL
-);
---rollback DROP TABLE authorities
-
 CREATE TABLE IF NOT EXISTS supplier(
     id          BIGSERIAL                   PRIMARY KEY,
     name        VARCHAR                     NOT NULL,
@@ -40,7 +27,7 @@ CREATE TABLE IF NOT EXISTS shipment(
     created_at              TIMESTAMP WITH TIME ZONE    NOT NULL,
     updated_at              TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT now()
 );
-CREATE INDEX shipment_external_shipment_id ON shipment(external_shipment_id);
+CREATE INDEX IF NOT EXISTS shipment_external_shipment_id ON shipment(external_shipment_id);
 
 
 CREATE TABLE IF NOT EXISTS location_type(
@@ -126,7 +113,7 @@ CREATE TABLE IF NOT EXISTS outbound_shipment(
     created_at              TIMESTAMP WITH TIME ZONE    NOT NULL,
     updated_at              TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT now()
 );
-CREATE INDEX outbound_shipment_external_shipment_id ON outbound_shipment(external_shipment_id);
+CREATE INDEX IF NOT EXISTS outbound_shipment_external_shipment_id ON outbound_shipment(external_shipment_id);
 
 CREATE TABLE IF NOT EXISTS withdrawal(
     id                      BIGSERIAL                   PRIMARY KEY,

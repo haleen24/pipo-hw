@@ -56,12 +56,18 @@ public class StockServiceImpl implements StockService {
         if (shipmentUnitId != null) {
             ShipmentUnit shipmentUnit = shipmentUnitService.getById(shipmentUnitId);
             actualAmount = Math.min(shipmentUnit.getAmount(), amount);
+            shipmentUnit.setAmount(shipmentUnit.getAmount() - actualAmount);
+            shipmentUnitService.update(shipmentUnit);
         }
-        Stock stock = Stock.builder()
-            .location(location)
-            .product(product)
-            .amount(actualAmount)
-            .build();
+        Stock stock = getStockByLocationCode(locationCode)
+            .stream().filter(stock1 -> stock1.getProduct().getCode().equals(productCode))
+            .findFirst()
+            .orElse(Stock.builder()
+                .location(location)
+                .product(product)
+                .amount(0L)
+                .build());
+        stock.setAmount(stock.getAmount() + actualAmount);
         stockRepository.save(stockMapper.toStockEntity(stock));
         return stock;
     }

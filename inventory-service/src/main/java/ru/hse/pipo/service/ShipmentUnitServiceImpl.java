@@ -61,6 +61,12 @@ public class ShipmentUnitServiceImpl implements ShipmentUnitService {
             .allMatch(Objects::nonNull);
     }
 
+    @Override
+    public void update(ShipmentUnit shipmentUnit) {
+        ShipmentUnitEntity shipmentUnitEntity = shipmentUnitMapper.toShipmentUnitEntity(shipmentUnit);
+        shipmentUnitRepository.save(shipmentUnitEntity);
+    }
+
     private ShipmentUnitEntity getShipmentUnitEntity(Long id) {
         Optional<ShipmentUnitEntity> shipmentUnitEntity = shipmentUnitRepository.findById(id);
         if (shipmentUnitEntity.isEmpty()) {

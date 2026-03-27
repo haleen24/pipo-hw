@@ -11,4 +11,6 @@ public interface ShipmentUnitService {
     ShipmentUnit moveById(Long id, String locationCode);
 
     Boolean isShipmentComplete(Shipment shipment);
+
+    void update(ShipmentUnit shipmentUnit);
 }
