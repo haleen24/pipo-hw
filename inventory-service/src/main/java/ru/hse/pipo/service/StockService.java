@@ -10,4 +10,6 @@ public interface StockService {
     List<Stock> getStockByLocationCode(String locationCode);
 
     void update(Stock stock);
+
+    Stock moveToStock(String locationCode, String productCode, Long amount, Long shipmentUnitId);
 }

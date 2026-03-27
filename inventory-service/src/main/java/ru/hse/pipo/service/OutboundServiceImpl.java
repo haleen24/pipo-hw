@@ -49,13 +49,13 @@ public class OutboundServiceImpl implements OutboundService {
     }
 
     @Override
-    public OutboundShipmentWithWithdrawals fail(Long id) {
+    public OutboundShipmentWithWithdrawals fail(Long id, String locationCodeForReturn) {
         OutboundShipmentWithWithdrawals outboundShipmentWithWithdrawals = get(id);
         OutboundShipment outboundShipment = outboundShipmentWithWithdrawals.getOutboundShipment();
         outboundShipment.setStatus(OutboundShipmentStatus.CANCELED);
         OutboundShipmentEntity outboundShipmentEntity = outboundShipmentMapper.toOutboundShipmentEntity(outboundShipment);
         OutboundShipmentEntity updatedOutboundShipmentEntity = outboundShipmentRepository.save(outboundShipmentEntity);
-        List<Withdrawal> withdrawals = withdrawalService.fail(outboundShipmentWithWithdrawals.getWithdrawals());
+        List<Withdrawal> withdrawals = withdrawalService.fail(outboundShipmentWithWithdrawals.getWithdrawals(), locationCodeForReturn);
         return new OutboundShipmentWithWithdrawals(outboundShipmentMapper.toOutboundShipment(updatedOutboundShipmentEntity), withdrawals);
     }
 

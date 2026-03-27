@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ru.hse.inventory.controller.OutboundApi;
 import ru.hse.inventory.model.CreateOutboundShipmentRequest;
+import ru.hse.inventory.model.FailOutboundShipmentRequest;
 import ru.hse.inventory.model.OutboundShipmentResponse;
 import ru.hse.inventory.model.ProcessWithdrawalRequest;
 import ru.hse.inventory.model.WithdrawalResponse;
@@ -34,8 +35,9 @@ public class OutboundController implements OutboundApi {
     }
 
     @Override
-    public ResponseEntity<OutboundShipmentResponse> failOutboundShipment(Long id) {
-        OutboundShipmentWithWithdrawals outboundShipmentWithWithdrawals = outboundService.fail(id);
+    public ResponseEntity<OutboundShipmentResponse> failOutboundShipment(Long id, FailOutboundShipmentRequest failOutboundShipmentRequest) {
+        OutboundShipmentWithWithdrawals outboundShipmentWithWithdrawals =
+            outboundService.fail(id, failOutboundShipmentRequest.getLocationCodeForReturn());
         OutboundShipmentResponse outboundShipmentResponse =
             outboundShipmentMapper.toOutboundShipmentResponse(outboundShipmentWithWithdrawals.getOutboundShipment(),
                 outboundShipmentWithWithdrawals.getWithdrawals());

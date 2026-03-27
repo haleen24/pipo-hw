@@ -55,7 +55,12 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     }
 
     @Override
-    public List<Withdrawal> fail(List<Withdrawal> withdrawals) {
+    public List<Withdrawal> fail(List<Withdrawal> withdrawals, String locationCodeForReturn) {
+        withdrawals.stream()
+            .filter(withdrawal -> withdrawal.getStatus() == WithdrawalStatus.COMPLETED)
+            .forEach(withdrawal -> {
+                stockService.moveToStock(locationCodeForReturn, withdrawal.getProduct().getCode(), withdrawal.getAmount(), null);
+            });
         List<WithdrawalEntity> withdrawalEntities = withdrawals.stream()
             .map(withdrawal -> {
                 withdrawal.setStatus(WithdrawalStatus.FAILED);

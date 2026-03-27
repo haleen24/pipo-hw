@@ -11,16 +11,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import ru.hse.inventory.model.CreateOutboundShipmentRequest;
 import ru.hse.inventory.model.CreateOutboundShipmentRequestProductsInner;
+import ru.hse.inventory.model.FailOutboundShipmentRequest;
 import ru.hse.inventory.model.OutboundShipmentResponse;
 import ru.hse.inventory.model.WithdrawalResponse;
+import ru.hse.pipo.entity.LocationEntity;
 import ru.hse.pipo.entity.OutboundShipmentEntity;
 import ru.hse.pipo.entity.ProductEntity;
 import ru.hse.pipo.entity.ReceiverEntity;
+import ru.hse.pipo.entity.StockEntity;
 import ru.hse.pipo.entity.WithdrawalEntity;
 import ru.hse.pipo.exception.InventoryExceptionCode;
 import ru.hse.pipo.model.OutboundShipmentStatus;
+import ru.hse.pipo.model.Stock;
 import ru.hse.pipo.model.WithdrawalStatus;
+import ru.hse.pipo.model.ZoneType;
 import ru.hse.pipo.repository.OutboundShipmentRepository;
+import ru.hse.pipo.repository.StockRepository;
+import ru.hse.pipo.repository.WithdrawalRepository;
 import ru.hse.pipo.utils.DataGenerator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,6 +45,12 @@ public class OutboundOutboundShipmentTest extends CommonTestConfiguration {
 
     @Autowired
     OutboundShipmentRepository outboundShipmentRepository;
+
+    @Autowired
+    StockRepository stockRepository;
+
+    @Autowired
+    WithdrawalRepository withdrawalRepository;
 
     @Test
     void getOutboundShipmentNotFoundTest() {
@@ -134,10 +147,15 @@ public class OutboundOutboundShipmentTest extends CommonTestConfiguration {
     @Test
     void failOutboundShipmentSuccessTest() {
         OutboundShipmentEntity outboundOutboundShipmentEntity = dataGenerator.generateOutboundShipment();
-        dataGenerator.generateWithdrawal(outboundOutboundShipmentEntity);
+        LocationEntity locationEntity = dataGenerator.generateLocation(ZoneType.STORAGE);
+        WithdrawalEntity withdrawalEntity = dataGenerator.generateWithdrawal(outboundOutboundShipmentEntity);
+        withdrawalEntity.setStatus(WithdrawalStatus.COMPLETED.name());
+        withdrawalRepository.save(withdrawalEntity);
+        FailOutboundShipmentRequest failOutboundShipmentRequest = new FailOutboundShipmentRequest();
+        failOutboundShipmentRequest.setLocationCodeForReturn(locationEntity.getCode());
 
         ResponseEntity<OutboundShipmentResponse> response =
-            restClient.put().uri(URL_BY_ID.formatted(outboundOutboundShipmentEntity.getId())).retrieve()
+            restClient.put().uri(URL_BY_ID.formatted(outboundOutboundShipmentEntity.getId())).body(failOutboundShipmentRequest).retrieve()
                 .toEntity(OutboundShipmentResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -148,9 +166,12 @@ public class OutboundOutboundShipmentTest extends CommonTestConfiguration {
         assertEquals(outboundOutboundShipmentResponse.getReceiverCode(), outboundOutboundShipmentEntity.getReceiver().getCode());
         assertEquals(1, outboundOutboundShipmentResponse.getWithdrawals().size());
         WithdrawalResponse withdrawalResponse = outboundOutboundShipmentResponse.getWithdrawals().getFirst();
-        assertEquals(WithdrawalStatus.FAILED.name(),withdrawalResponse.getStatus());
+        assertEquals(WithdrawalStatus.FAILED.name(), withdrawalResponse.getStatus());
         assertNotNull(outboundOutboundShipmentResponse.getUpdatedAt());
         assertNotNull(outboundOutboundShipmentResponse.getCreatedAt());
+        StockEntity stockEntity = stockRepository.findByLocationCodeAndProductCode(locationEntity.getCode(), withdrawalResponse.getProductCode());
+        assertNotNull(stockEntity);
+        assertEquals(withdrawalResponse.getProductCount(), stockEntity.getAmount());
     }
 
     private static @NotNull CreateOutboundShipmentRequest getCreateOutboundShipmentRequest(ReceiverEntity receiverEntity,

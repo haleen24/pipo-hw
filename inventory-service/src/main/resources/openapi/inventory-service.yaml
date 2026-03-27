@@ -451,6 +451,12 @@ paths:
       tags: [ Outbound ]
       summary: fail outbound shipment
       operationId: failOutboundShipment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FailOutboundShipmentRequest'
       responses:
         '200':
           description: OK
@@ -481,6 +487,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WithdrawalResponse'
+  /api/v1/stock:
+    post:
+      tags: [ Stock ]
+      summary: register stock
+      operationId: moveToStock
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoveStockRequest'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StockResponse'
 components:
   schemas:
     RegisterRequest:
@@ -665,6 +689,11 @@ components:
             properties:
               productCode: { type: string }
               productCount: { type: integer, format: int64 }
+    FailOutboundShipmentRequest:
+      type: object
+      required: [ locationCodeForReturn ]
+      properties:
+        locationCodeForReturn: { type: string }
     OutboundShipmentResponse:
       type: object
       properties:
@@ -691,6 +720,23 @@ components:
         productCount: { type: integer, format: int64 }
         status: { type: string }
         outboundShipmentId: { type: integer, format: int64 }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+    MoveStockRequest:
+      type: object
+      required: [ productCode, locationCodeTo, amount, shipmentUnitId]
+      properties:
+        productCode: { type: string }
+        locationCodeTo: { type: string }
+        amount: { type: integer, format: int64 }
+        shipmentUnitId: { type: integer, format: int64 }
+    StockResponse:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        productCode: { type: string }
+        locationCode: { type: string }
+        amount: { type: integer, format: int64 }
         createdAt: { type: string, format: date-time }
         updatedAt: { type: string, format: date-time }
 

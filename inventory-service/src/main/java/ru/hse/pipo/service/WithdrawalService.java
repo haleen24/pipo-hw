@@ -10,7 +10,7 @@ public interface WithdrawalService {
 
     List<Withdrawal> getByOutboundShipmentId(Long outboundShipmentId);
 
-    List<Withdrawal> fail(List<Withdrawal> withdrawals);
+    List<Withdrawal> fail(List<Withdrawal> withdrawals, String locationCodeForReturn);
 
     Withdrawal getById(Long id);
 

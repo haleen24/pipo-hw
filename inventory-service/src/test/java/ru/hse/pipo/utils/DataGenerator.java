@@ -8,6 +8,7 @@ import ru.hse.pipo.entity.OutboundShipmentEntity;
 import ru.hse.pipo.entity.ProductEntity;
 import ru.hse.pipo.entity.ReceiverEntity;
 import ru.hse.pipo.entity.ShipmentEntity;
+import ru.hse.pipo.entity.ShipmentUnitEntity;
 import ru.hse.pipo.entity.StockEntity;
 import ru.hse.pipo.entity.SupplierEntity;
 import ru.hse.pipo.entity.WithdrawalEntity;
@@ -21,6 +22,7 @@ import ru.hse.pipo.repository.OutboundShipmentRepository;
 import ru.hse.pipo.repository.ProductRepository;
 import ru.hse.pipo.repository.ReceiverRepository;
 import ru.hse.pipo.repository.ShipmentRepository;
+import ru.hse.pipo.repository.ShipmentUnitRepository;
 import ru.hse.pipo.repository.StockRepository;
 import ru.hse.pipo.repository.SupplierRepository;
 import ru.hse.pipo.repository.WithdrawalRepository;
@@ -62,6 +64,8 @@ public class DataGenerator {
     @Autowired
     WithdrawalRepository withdrawalRepository;
 
+    @Autowired
+    ShipmentUnitRepository shipmentUnitRepository;
 
     public SupplierEntity generateSupplier() {
         SupplierEntity supplierEntity = SupplierEntity.builder()
@@ -161,5 +165,19 @@ public class DataGenerator {
             .build();
         withdrawalRepository.save(withdrawalEntity);
         return withdrawalEntity;
+    }
+
+    public ShipmentUnitEntity generateShipmentUnit() {
+        ShipmentEntity shipmentEntity = generateShipment();
+        LocationEntity locationEntity = generateLocation(ZoneType.INBOUND);
+        ShipmentUnitEntity shipmentUnitEntity = ShipmentUnitEntity.builder()
+            .shipment(shipmentEntity)
+            .amount(generateLong())
+            .widthCm(generateLong())
+            .lengthCm(generateLong())
+            .heightCm(generateLong())
+            .location(locationEntity)
+            .build();
+        return shipmentUnitRepository.save(shipmentUnitEntity);
     }
 }

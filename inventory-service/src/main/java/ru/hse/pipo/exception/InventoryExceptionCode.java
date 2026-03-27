@@ -32,7 +32,10 @@ public enum InventoryExceptionCode {
     NOT_ENOUGH_STOCK("INV-021", "Not enough stock for product with code {%s}. Required: {%s}, available: {%s}", HttpStatus.BAD_REQUEST),
     STOCK_NOT_FOUND("INV-022", "Product with code {%s} not found in location with code {%s}", HttpStatus.NOT_FOUND),
     OUTBOUND_SHIPMENT_CANCELED("INV-023", "Outbound shipment with id {%s} is canceled", HttpStatus.BAD_REQUEST),
-    WITHDRAWAL_NOT_FOUND("INV-024", "Withdrawal with id {%s} not found",HttpStatus.NOT_FOUND);
+    WITHDRAWAL_NOT_FOUND("INV-024", "Withdrawal with id {%s} not found", HttpStatus.NOT_FOUND),
+    NO_ROOM_FOR_STOCK_IN_LOCATION("INV-025", "Not enough size in location with code {%s} for product with code {%s} and amount {%s}",
+        HttpStatus.CONFLICT),
+    LOCATION_NOT_IN_STORAGE("INV-026", "Location for storage not in storage zone", HttpStatus.FORBIDDEN);
 
     private final String code;
     private final String message;

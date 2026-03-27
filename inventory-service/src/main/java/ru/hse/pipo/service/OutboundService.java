@@ -9,7 +9,7 @@ public interface OutboundService {
 
     OutboundShipmentWithWithdrawals get(Long id);
 
-    OutboundShipmentWithWithdrawals fail(Long id);
+    OutboundShipmentWithWithdrawals fail(Long id, String locationCodeForReturn);
 
     Withdrawal processWithdrawal(Long withdrawalId, String locationCode);
 }
