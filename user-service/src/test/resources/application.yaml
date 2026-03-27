@@ -7,6 +7,9 @@ spring:
   liquibase:
     change-log: classpath:/db/changelog/changelog-master.yaml
 
+proxy:
+  target-url: http://localhost:8080
+
 jwt:
   expiration-time: 10m
   key:
