@@ -8,3 +8,16 @@ spring:
     driver-class-name: org.postgresql.Driver
   liquibase:
     change-log: classpath:/db/changelog/changelog-master.yaml
+  cloud:
+    gateway:
+      routes:
+        - id: api-proxy
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/**
+
+jwt:
+  expiration-time: 10m
+  key:
+    public: ${JWT_PUBLIC_KEY}
+    private: ${JWT_PRIVATE_KEY}

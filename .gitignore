@@ -40,5 +40,5 @@ out/
 .env
 
 ### cert ###
-private.pem
-public.pem
+user-service/src/main/resources/private.pem
+user-service/src/main/resources/public.pem

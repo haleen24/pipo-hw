@@ -27,12 +27,17 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
     implementation 'org.liquibase:liquibase-core'
     implementation 'io.swagger.core.v3:swagger-annotations:2.2.15'
     implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
     implementation 'jakarta.validation:jakarta.validation-api:3.1.0'
     implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
     runtimeOnly 'org.postgresql:postgresql'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
@@ -46,10 +51,10 @@ dependencies {
 
 openApiGenerate {
     generatorName = "spring"
-    inputSpec = "$rootDir/inventory-service/src/main/resources/openapi/inventory-service.yaml"
+    inputSpec = "$rootDir/user-service/src/main/resources/openapi/user-service.yaml"
     outputDir = "$buildDir/generated"
-    apiPackage = "ru.hse.inventory.controller"
-    modelPackage = "ru.hse.inventory.model"
+    apiPackage = "ru.hse.user.controller"
+    modelPackage = "ru.hse.user.model"
     configOptions = [
             interfaceOnly          : "true",
             useTags                : "true",

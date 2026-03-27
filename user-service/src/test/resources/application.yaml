@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: inventory
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-master.yaml
+
+jwt:
+  expiration-time: 10m
+  key:
+    public: public-test.pem
+    private: private-test.pem

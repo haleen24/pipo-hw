@@ -1,11 +1,9 @@
 openapi: 3.0.3
 info:
-  title: Shipment API
+  title: Inventory API
   version: v1
 
 tags:
-  - name: Auth
-    description: Endpoints for registration and login
   - name: Shipment
     description: Endpoints for shipment manipulation
   - name: Supplier
@@ -24,44 +22,6 @@ tags:
     description: Endpoints for withdrawal manipulation
 
 paths:
-  /public/auth/register:
-    post:
-      tags: [ Auth ]
-      summary: Register new user
-      operationId: registerUser
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RegisterRequest'
-      responses:
-        '201':
-          description: Registered
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthResponse'
-
-  /public/auth/login:
-    post:
-      tags: [ Auth ]
-      summary: Login
-      operationId: loginUser
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LoginRequest'
-      responses:
-        '200':
-          description: Authenticated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthResponse'
-
   /api/v1/shipment:
     post:
       tags: [ Shipment ]
@@ -507,25 +467,6 @@ paths:
                 $ref: '#/components/schemas/StockResponse'
 components:
   schemas:
-    RegisterRequest:
-      type: object
-      required: [ username, password ]
-      properties:
-        username: { type: string }
-        password: { type: string }
-
-    LoginRequest:
-      type: object
-      required: [ username, password ]
-      properties:
-        username: { type: string }
-        password: { type: string }
-
-    AuthResponse:
-      type: object
-      properties:
-        token: { type: string }
-
     CreateShipmentRequest:
       type: object
       required: [ supplierCode, productCode, shipmentUnitCount ]
@@ -739,4 +680,3 @@ components:
         amount: { type: integer, format: int64 }
         createdAt: { type: string, format: date-time }
         updatedAt: { type: string, format: date-time }
-
