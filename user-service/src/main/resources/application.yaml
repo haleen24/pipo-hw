@@ -1,6 +1,9 @@
 spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
   application:
-    name: inventory
+    name: user
   datasource:
     url: ${PG_URL}
     username: ${PG_USER}
