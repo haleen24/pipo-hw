@@ -130,7 +130,7 @@ CREATE INDEX outbound_shipment_external_shipment_id ON outbound_shipment(externa
 
 CREATE TABLE IF NOT EXISTS withdrawal(
     id                      BIGSERIAL                   PRIMARY KEY,
-    product_code            VARCHAR                     NOT NULL,
+    product_id              BIGINT                      NOT NULL REFERENCES product(id),
     amount                  BIGINT                      NOT NULL,
     status                  VARCHAR                     NOT NULL,
     outbound_shipment_id    BIGINT                      NOT NULL REFERENCES outbound_shipment(id),

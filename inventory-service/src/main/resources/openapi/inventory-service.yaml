@@ -649,5 +649,20 @@ components:
         receiverCode: { type: string }
         externalShipmentId: { type: string }
         status: { type: string }
+        withdrawals:
+          type: array
+          items:
+            $ref: '#/components/schemas/WithdrawalResponse'
         createdAt: { type: string, format: date-time }
         updatedAt: { type: string, format: date-time }
+    WithdrawalResponse:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        productCode: { type: string }
+        productCount: { type: integer, format: int64 }
+        status: { type: string }
+        outboundShipmentId: { type: integer, format: int64 }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+

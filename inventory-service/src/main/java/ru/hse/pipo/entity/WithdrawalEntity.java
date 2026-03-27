@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -21,15 +22,18 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 @Entity
 @Table(name = "withdrawal")
+@Builder
 public class WithdrawalEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String productCode;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private ProductEntity product;
     private Long amount;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "outbound_shipment_id")
-    private OutboundShipmentEntity outboundShipmentEntity;
+    private OutboundShipmentEntity outboundShipment;
     private String status;
     @CreationTimestamp
     private OffsetDateTime createdAt;

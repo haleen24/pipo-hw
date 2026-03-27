@@ -1,11 +1,11 @@
 package ru.hse.pipo.service;
 
-import ru.hse.pipo.model.OutboundShipment;
+import ru.hse.pipo.model.OutboundShipmentWithWithdrawals;
 
 public interface OutboundService {
-    OutboundShipment create(OutboundShipment outboundShipment);
+    OutboundShipmentWithWithdrawals create(OutboundShipmentWithWithdrawals outboundShipmentWithWithdrawals);
 
-    OutboundShipment get(Long id);
+    OutboundShipmentWithWithdrawals get(Long id);
 
-    OutboundShipment fail(Long id);
+    OutboundShipmentWithWithdrawals fail(Long id);
 }

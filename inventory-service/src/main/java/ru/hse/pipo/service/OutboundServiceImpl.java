@@ -1,5 +1,7 @@
 package ru.hse.pipo.service;
 
+import java.util.List;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -9,7 +11,9 @@ import ru.hse.pipo.exception.InventoryExceptionCode;
 import ru.hse.pipo.mapper.OutboundShipmentMapper;
 import ru.hse.pipo.model.OutboundShipment;
 import ru.hse.pipo.model.OutboundShipmentStatus;
+import ru.hse.pipo.model.OutboundShipmentWithWithdrawals;
 import ru.hse.pipo.model.Receiver;
+import ru.hse.pipo.model.Withdrawal;
 import ru.hse.pipo.repository.OutboundShipmentRepository;
 
 @Service
@@ -22,29 +26,39 @@ public class OutboundServiceImpl implements OutboundService {
 
     @Override
     @Transactional
-    public OutboundShipment create(OutboundShipment outboundShipment) {
+    public OutboundShipmentWithWithdrawals create(OutboundShipmentWithWithdrawals outboundShipmentWithWithdrawals) {
+        OutboundShipment outboundShipment = outboundShipmentWithWithdrawals.getOutboundShipment();
         Receiver receiver = receiverService.getByCode(outboundShipment.getReceiver().getCode());
         outboundShipment.setReceiver(receiver);
         outboundShipment.setStatus(OutboundShipmentStatus.IN_PROCESS.name());
         OutboundShipmentEntity outboundShipmentEntity = outboundShipmentMapper.toOutboundShipmentEntity(outboundShipment);
         OutboundShipmentEntity createdOutboundShipmentEntity = outboundShipmentRepository.save(outboundShipmentEntity);
-        withdrawalService.create(createdOutboundShipmentEntity.getId(), outboundShipment.getWithdrawals());
-        return outboundShipmentMapper.toOutboundShipment(createdOutboundShipmentEntity);
+        OutboundShipment createdOutboundShipment = outboundShipmentMapper.toOutboundShipment(createdOutboundShipmentEntity);
+        List<Withdrawal> withdrawals = withdrawalService.create(createdOutboundShipment, outboundShipmentWithWithdrawals.getWithdrawals());
+        return new OutboundShipmentWithWithdrawals(createdOutboundShipment, withdrawals);
     }
 
     @Override
-    public OutboundShipment get(Long id) {
-        OutboundShipmentEntity outboundShipmentEntity = outboundShipmentRepository.findById(id).orElseThrow(() -> new InventoryException(
-            InventoryExceptionCode.OUTBOUND_SHIPMENT_NOT_FOUND, id.toString()));
-        return outboundShipmentMapper.toOutboundShipment(outboundShipmentEntity);
+    public OutboundShipmentWithWithdrawals get(Long id) {
+        List<Withdrawal> withdrawals = withdrawalService.getByOutboundShipmentId(id);
+        OutboundShipment outboundShipment = withdrawals.isEmpty() ? getById(id) : withdrawals.getFirst().getOutboundShipment();
+        return new OutboundShipmentWithWithdrawals(outboundShipment, withdrawals);
     }
 
     @Override
-    public OutboundShipment fail(Long id) {
-        OutboundShipment outboundShipment = get(id);
+    public OutboundShipmentWithWithdrawals fail(Long id) {
+        OutboundShipmentWithWithdrawals outboundShipmentWithWithdrawals = get(id);
+        OutboundShipment outboundShipment = outboundShipmentWithWithdrawals.getOutboundShipment();
         outboundShipment.setStatus(OutboundShipmentStatus.CANCELED.name());
         OutboundShipmentEntity outboundShipmentEntity = outboundShipmentMapper.toOutboundShipmentEntity(outboundShipment);
         OutboundShipmentEntity updatedOutboundShipmentEntity = outboundShipmentRepository.save(outboundShipmentEntity);
-        return outboundShipmentMapper.toOutboundShipment(updatedOutboundShipmentEntity);
+        List<Withdrawal> withdrawals = withdrawalService.fail(outboundShipmentWithWithdrawals.getWithdrawals());
+        return new OutboundShipmentWithWithdrawals(outboundShipmentMapper.toOutboundShipment(updatedOutboundShipmentEntity), withdrawals);
+    }
+
+    private OutboundShipment getById(Long id) {
+        OutboundShipmentEntity outboundShipmentEntity = outboundShipmentRepository.findById(id)
+            .orElseThrow(() -> new InventoryException(InventoryExceptionCode.OUTBOUND_SHIPMENT_NOT_FOUND, id.toString()));
+        return outboundShipmentMapper.toOutboundShipment(outboundShipmentEntity);
     }
 }

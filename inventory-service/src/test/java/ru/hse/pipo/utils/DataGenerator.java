@@ -10,8 +10,10 @@ import ru.hse.pipo.entity.ReceiverEntity;
 import ru.hse.pipo.entity.ShipmentEntity;
 import ru.hse.pipo.entity.StockEntity;
 import ru.hse.pipo.entity.SupplierEntity;
+import ru.hse.pipo.entity.WithdrawalEntity;
 import ru.hse.pipo.entity.ZoneEntity;
 import ru.hse.pipo.model.ShipmentStatus;
+import ru.hse.pipo.model.WithdrawalStatus;
 import ru.hse.pipo.model.ZoneType;
 import ru.hse.pipo.repository.LocationRepository;
 import ru.hse.pipo.repository.LocationTypeRepository;
@@ -21,6 +23,7 @@ import ru.hse.pipo.repository.ReceiverRepository;
 import ru.hse.pipo.repository.ShipmentRepository;
 import ru.hse.pipo.repository.StockRepository;
 import ru.hse.pipo.repository.SupplierRepository;
+import ru.hse.pipo.repository.WithdrawalRepository;
 import ru.hse.pipo.repository.ZoneRepository;
 
 import static ru.hse.pipo.CommonTestConfiguration.generateLong;
@@ -55,6 +58,9 @@ public class DataGenerator {
 
     @Autowired
     OutboundShipmentRepository outboundShipmentRepository;
+
+    @Autowired
+    WithdrawalRepository withdrawalRepository;
 
 
     public SupplierEntity generateSupplier() {
@@ -143,5 +149,17 @@ public class DataGenerator {
             .status(ShipmentStatus.IN_PROCESS.name())
             .build();
         return outboundShipmentRepository.save(outboundShipmentEntity);
+    }
+
+    public WithdrawalEntity generateWithdrawal(OutboundShipmentEntity outboundShipmentEntity) {
+        ProductEntity productEntity = generateProduct();
+        WithdrawalEntity withdrawalEntity = WithdrawalEntity.builder()
+            .outboundShipment(outboundShipmentEntity)
+            .product(productEntity)
+            .amount(generateLong())
+            .status(WithdrawalStatus.CREATED.name())
+            .build();
+        withdrawalRepository.save(withdrawalEntity);
+        return withdrawalEntity;
     }
 }
