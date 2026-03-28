@@ -6,10 +6,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
 
 @RestController
@@ -34,18 +36,24 @@ public class ProxyController {
         if (body != null && body.length > 0) {
             requestBuilder.body(body);
         }
-        return requestBuilder.exchange((req, res) -> {
-            byte[] responseBody = res.getBody().readAllBytes();
-            HttpHeaders headers = new HttpHeaders();
-            res.getHeaders().forEach((name, values) -> {
-                if (!name.equalsIgnoreCase("Transfer-Encoding")) {
-                    headers.addAll(name, values);
-                }
+        try {
+            return requestBuilder.exchange((req, res) -> {
+                byte[] responseBody = res.getBody().readAllBytes();
+                HttpHeaders headers = new HttpHeaders();
+                res.getHeaders().forEach((name, values) -> {
+                    if (!name.equalsIgnoreCase("Transfer-Encoding")) {
+                        headers.addAll(name, values);
+                    }
+                });
+                return ResponseEntity
+                    .status(res.getStatusCode())
+                    .headers(headers)
+                    .body(responseBody);
             });
+        } catch (ResourceAccessException e) {
             return ResponseEntity
-                .status(res.getStatusCode())
-                .headers(headers)
-                .body(responseBody);
-        });
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(("{\"error\": \"Service unavailable: " + e.getMessage() + "\"}").getBytes());
+        }
     }
 }

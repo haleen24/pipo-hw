@@ -1,6 +1,6 @@
 spring:
   servers:
-    - url : http://localhost:8080
+    - url : ${SERVER_URL}
       description: inventory-service
   jpa:
     hibernate:
@@ -14,3 +14,16 @@ spring:
     driver-class-name: org.postgresql.Driver
   liquibase:
     change-log: classpath:/db/changelog/changelog-master.yaml
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: always
+  prometheus:
+    metrics:
+      export:
+        enabled: true

@@ -15,3 +15,16 @@ jwt:
   key:
     public: public-test.pem
     private: private-test.pem
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: always
+  prometheus:
+    metrics:
+      export:
+        enabled: true

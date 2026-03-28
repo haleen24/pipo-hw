@@ -2,7 +2,7 @@ FROM eclipse-temurin:21-jdk-jammy
 
 WORKDIR /app
 
-COPY build/libs/*.jar app.jar
+COPY inventory-service/build/libs/inventory-service-0.1.jar app.jar
 
 ENTRYPOINT ["java","-jar","/app/app.jar"]
 

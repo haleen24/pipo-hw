@@ -1,5 +1,17 @@
+springdoc:
+  swagger-ui:
+    urls:
+      - name: User Service
+        url: /v3/api-docs
+      - name: Inventory Service
+        url: /openapi/inventory-service.yaml
+  servers:
+    - url: ${SERVER_URL}
+      description: Kubernetes
 server:
   port: 8081
+  servers:
+    - url : ${SERVER_URL}
 spring:
   jpa:
     hibernate:
@@ -15,7 +27,7 @@ spring:
     change-log: classpath:/db/changelog/changelog-master.yaml
 
 proxy:
-  target-url: http://localhost:8080
+  target-url: ${INVENTORY_URL}
 
 jwt:
   expiration-time: 10m
