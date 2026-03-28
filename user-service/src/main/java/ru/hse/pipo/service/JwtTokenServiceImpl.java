@@ -1,6 +1,5 @@
 package ru.hse.pipo.service;
 
-import java.nio.file.Files;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -17,7 +16,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -68,20 +66,16 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     }
 
     @SneakyThrows
-    private PrivateKey loadPrivateKey(String resourceName) {
-        ClassPathResource resource = new ClassPathResource(resourceName);
-        String key = Files.readString(resource.getFile().toPath());
-        byte[] encoded = Base64.getDecoder().decode(clearKey(key));
+    private PrivateKey loadPrivateKey(String keyString) {
+        byte[] encoded = Base64.getDecoder().decode(clearKey(keyString));
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
         KeyFactory kf = KeyFactory.getInstance("RSA");
         return kf.generatePrivate(keySpec);
     }
 
     @SneakyThrows
-    private PublicKey loadPublicKey(String resourceName) {
-        ClassPathResource resource = new ClassPathResource(resourceName);
-        String key = Files.readString(resource.getFile().toPath());
-        byte[] encoded = Base64.getDecoder().decode(clearKey(key));
+    private PublicKey loadPublicKey(String keyString) {
+        byte[] encoded = Base64.getDecoder().decode(clearKey(keyString));
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(encoded);
         KeyFactory kf = KeyFactory.getInstance("RSA");
         return kf.generatePublic(keySpec);

@@ -42,3 +42,4 @@ out/
 ### cert ###
 user-service/src/main/resources/private.pem
 user-service/src/main/resources/public.pem
+helm/app/secrets.yaml

@@ -1,0 +1,30 @@
+inventory:
+  name: inventory-service
+  replicaCount: 2
+  image:
+    repository: haleen/inventory-service
+    tag: 1.0.1
+  port: 8080
+  env:
+    SERVER_URL: http://inventory-service:8080
+    PG_URL: jdbc:postgresql://postgresql:5432/pipo
+    PG_USER: pipo
+    PG_PASSWORD: pipo
+
+user:
+  name: user-service
+  replicaCount: 2
+  image:
+    repository: haleen/user-service
+    tag: 1.0.3
+  port: 8081
+  env:
+    PG_URL: jdbc:postgresql://postgresql:5432/pipo
+    PG_USER: pipo
+    PG_PASSWORD: pipo
+    SERVER_URL: http://localhost:30081
+    INVENTORY_URL: http://inventory-service:8080
+
+ingress:
+  enabled: true
+  host: pipo.local

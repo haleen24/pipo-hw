@@ -8,6 +8,17 @@ springdoc:
   servers:
     - url: ${SERVER_URL}
       description: Kubernetes
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  security:
+    enabled: false
 server:
   port: 8081
   servers:

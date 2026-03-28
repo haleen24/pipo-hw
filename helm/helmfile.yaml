@@ -1,0 +1,93 @@
+repositories:
+  - name: grafana
+    url: https://grafana.github.io/helm-charts
+  - name: prometheus-community
+    url: https://prometheus-community.github.io/helm-charts
+  - name: ingress-nginx
+    url: https://kubernetes.github.io/ingress-nginx
+
+releases:
+  - name: ingress-nginx
+    namespace: ingress-nginx
+    createNamespace: true
+    chart: ingress-nginx/ingress-nginx
+    version: 4.9.0
+    values:
+      - controller:
+          replicaCount: 1
+          metrics:
+            enabled: true
+  - name: postgresql
+    namespace: pipo
+    createNamespace: true
+    chart: ./postgresql
+  - name: loki
+    namespace: monitoring
+    createNamespace: true
+    chart: grafana/loki-stack
+    version: 2.10.0
+    values:
+      - loki:
+          persistence:
+            enabled: true
+            size: 5Gi
+        promtail:
+          enabled: true
+        grafana:
+          enabled: false
+  - name: prometheus
+    namespace: monitoring
+    chart: prometheus-community/prometheus
+    version: 25.0.0
+    values:
+      - server:
+          persistentVolume:
+            enabled: false
+          extraScrapeConfigs:
+            - job_name: 'spring-apps'
+              metrics_path: '/actuator/prometheus'
+              static_configs:
+                - targets:
+                    - 'user-service.pipo.svc.cluster.local:8081'
+                    - 'inventory-service.pipo.svc.cluster.local:8080'
+        alertmanager:
+          enabled: false
+        pushgateway:
+          enabled: false
+        kube-state-metrics:
+          enabled: false
+        prometheus-node-exporter:
+          enabled: false
+  - name: grafana
+    namespace: monitoring
+    chart: grafana/grafana
+    version: 7.0.0
+    values:
+      - adminPassword: admin
+        datasources:
+          datasources.yaml:
+            apiVersion: 1
+            datasources:
+              - name: Prometheus
+                type: prometheus
+                url: http://prometheus-server:80
+                isDefault: true
+              - name: Loki
+                type: loki
+                url: http://loki:3100
+  - name: pipo-app
+    namespace: pipo
+    chart: ./app
+    needs:
+      - pipo/postgresql
+      - monitoring/loki
+    values:
+      - ./app/secrets.yaml
+      - inventory:
+          image:
+            repository: haleen/inventory-service
+            tag: 1.0.1
+        user:
+          image:
+            repository: haleen/user-service
+            tag: 1.0.5

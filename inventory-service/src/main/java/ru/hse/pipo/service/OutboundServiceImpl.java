@@ -74,8 +74,8 @@ public class OutboundServiceImpl implements OutboundService {
             .findFirst().orElseThrow(
                 () -> new InventoryException(InventoryExceptionCode.STOCK_NOT_FOUND, productCode, locationCode));
         if (stock.getAmount() < withdrawal.getAmount()) {
-            throw new InventoryException(InventoryExceptionCode.NOT_ENOUGH_STOCK, productCode, stock.getAmount().toString(),
-                withdrawal.getAmount().toString());
+            throw new InventoryException(InventoryExceptionCode.NOT_ENOUGH_STOCK, productCode, withdrawal.getAmount().toString(),
+                stock.getAmount().toString());
         }
         stock.setAmount(stock.getAmount() - withdrawal.getAmount());
         stockService.update(stock);

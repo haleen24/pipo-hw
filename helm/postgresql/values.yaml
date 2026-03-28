@@ -1,0 +1,5 @@
+image: postgres:15
+database: pipo
+username: pipo
+password: pipo
+storage: 1Gi

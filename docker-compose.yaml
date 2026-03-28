@@ -17,7 +17,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: user-service/Dockerfile
     container_name: pipo
     ports:
       - "8080:8080"
