@@ -86,7 +86,7 @@ releases:
       - inventory:
           image:
             repository: haleen/inventory-service
-            tag: 1.0.2
+            tag: 1.0.3
         user:
           image:
             repository: haleen/user-service

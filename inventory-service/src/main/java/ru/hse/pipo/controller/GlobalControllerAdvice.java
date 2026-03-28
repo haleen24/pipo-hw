@@ -20,7 +20,7 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(InventoryException.class)
     public ResponseEntity<ErrorResponse> handleOtherExceptions(InventoryException e) {
-        log.error(e.getMessage());
+        log.error(e.getDetails());
         return ResponseEntity.status(e.getCode().getHttpStatus())
             .body(ErrorResponse.builder(e, e.getCode().getHttpStatus(), e.getDetails()).build());
     }
